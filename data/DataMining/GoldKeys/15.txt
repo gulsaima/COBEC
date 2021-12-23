@@ -1,0 +1,23 @@
+Mining Discrete Sequences
+Sequential Pattern Mining
+Sequence Clustering
+Distance-Based Method
+Graph-Based Method
+Subsequence-Based Clustering
+Mixture model
+CLUSEQ
+Position Outlier
+Probabilistic Suffix Tree
+Similarity measure
+Distance-Based Model
+Frequency-Based Model
+Baum–Welch Algorithm
+Sequence Classification
+Nearest Neighbor Classifier
+Graph-Based Methods
+Rule-Based
+Bag-of-Words Kernel
+Spectrum Kernel
+Weighted Degree Kernel
+Markov chain
+Hidden Markov Model

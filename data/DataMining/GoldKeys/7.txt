@@ -1,0 +1,34 @@
+Data Mining
+Pattern mining
+Clustering
+k-Means
+k-Medoids
+Hierarchical clustering
+ROCK
+Probability distribution
+Maximum likelihood estimation
+Graph-Based
+Scalable Data Clustering
+CLARANS
+BIRCH
+CURE
+High-Dimensional Clustering
+CLIQUE
+PROCLUS
+ORCLUS
+Consensus Clustering
+Pointwise Supervision
+Pairwise Supervision
+Supervised Clustering
+Visual Clustering
+Hypergraph Partitioning
+Meta-clustering
+Data Summarization
+Outlier Analysis
+Classification
+Dimensionality Reduction
+Similarity Search
+Indexing
+Customer Segmentation
+Collaborative Filtering
+Social Network Analysis

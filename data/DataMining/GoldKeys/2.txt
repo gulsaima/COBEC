@@ -1,0 +1,23 @@
+Data Preparation
+Feature Extraction
+Data Type
+Portability
+Discretization
+Binarization
+Time Series
+Data Cleaning
+Handling Missing Entries
+Scaling
+Normalization
+Data Reduction
+Data Transformation
+Sampling
+Reservoir Sampling
+Data Stream
+Feature Subset Selection
+Dimensionality Reduction
+Principal Component Analysis
+Singular Value Decomposition
+Latent Semantic Analysis
+Haar Wavelet Transform
+Multidimensional Scaling 

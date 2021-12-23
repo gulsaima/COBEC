@@ -1,0 +1,7 @@
+SQL
+Query
+Programming language
+Trigger
+Data definition language
+Data manipulation language
+Transaction management

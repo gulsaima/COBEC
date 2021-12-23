@@ -1,0 +1,23 @@
+Mining Spatial Data
+Spatial coordinates
+Time Series
+Multidimensional Transformation
+Wavelet
+Spatial Colocation Pattern
+Outlier Detection
+Point Outliers
+Shape Outliers
+Trajectory Mining
+Trajectories
+Multivariate Time Series
+Univariate Time Series
+Multidimensional Data
+Trajectory Pattern Mining
+Frequent Trajectory Path
+Dynamic time wrapping
+Colocation Patterns
+Trajectory Clustering
+Trajectory Outlier Detection
+Distance-Based Methods
+Sequence-Based Methods
+Trajectory Classification

@@ -1,0 +1,22 @@
+Association rule mining
+Pattern mining
+Frequent Itemset Mining
+Brute Force Algorithm
+Apriori Algorithm
+Efficient Support Counting
+Enumeration-Tree
+Vertical Counting
+Recursive Suffix-Based Pattern
+Data Structure
+FP-Growth
+Enumeration Tree Method
+Correlation
+χ2 Measure
+Interest Ratio
+Symmetric Confidence Measure
+Cosine Coefficient
+Jaccard Coefficient
+Negative Pattern Mining
+Meta-algorithms
+Sampling
+Data Partitioned Ensembles

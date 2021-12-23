@@ -1,0 +1,19 @@
+Recovery manager
+System crashes
+ARIES
+Log
+Log tail
+LSN
+Log record
+Update Log Record
+compensation log record
+CLR
+Transaction table
+Dirty page table
+WAL
+Checkpoint
+fuzzy checkpoint
+Begin checkpoint
+End checkpoint
+Redo phase
+Undo phase

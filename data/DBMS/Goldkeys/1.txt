@@ -1,0 +1,23 @@
+Data
+Database
+Database management system
+Database design
+File system
+Data independence
+Data integrity
+Data model
+Relational model
+Semantic data model
+Relation
+Schema
+Integrity constraints
+Conceptual schema
+External schema
+Query
+Query language
+Relational calculus
+Relational algebra
+Data manipulation language
+Transaction
+Locking protocol
+Database administrator

@@ -1,0 +1,13 @@
+Data structure
+ISAM
+Tree
+B+ tree
+Node
+Leaf node
+Root node
+Pointer
+Doubly linked list
+Pointer
+Bulk loading
+
+

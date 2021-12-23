@@ -1,0 +1,20 @@
+Disk
+Storage
+Page
+Block
+Memory hierarchy
+Primary storage
+Secondary storage
+Index
+File system
+Direct access
+RAID
+Data striping
+Redundancy
+Buffer manager
+Buffer pool
+Linked list
+Record
+
+
+

@@ -1,0 +1,10 @@
+Datalog
+deductive database
+Model
+Fixpoint
+stratum
+stratified program
+stratified datalog
+fixpoint evaluation
+Magic Sets Algorithm
+

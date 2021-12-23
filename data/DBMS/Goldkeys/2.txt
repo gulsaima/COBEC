@@ -1,0 +1,13 @@
+Entity
+Entity set
+Attribute
+Entity relationship model
+Conceptual design
+Requirement analysis
+Class hierarchy
+key constraint
+Primary key
+Weak entity
+Aggregation
+Ternary relationship
+Constraint

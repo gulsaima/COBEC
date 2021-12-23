@@ -1,0 +1,14 @@
+decision support
+data warehouse
+OLAP
+operational database
+fact table
+slicing
+dicing
+Statistical Databases
+SDBs
+Dimension table
+star schema
+Bitmap indexes
+MOLAP
+ROLAP

@@ -1,0 +1,20 @@
+Text mining
+Semantic analysis
+Document Normalization
+Cosine similarity
+Jaccard similarity
+Similarity function
+Representative-Based Algorithms
+Probabilistic Algorithm
+Co-clustering
+Topic Modeling
+Dimensionality Reduction
+Latent Semantic Analysis
+Clustering
+PLSA
+Instance-Based Classifier
+Centroid-Based Classification
+Rocchio Classification
+Bayes Classifier
+Multinomial Bayes Model
+SVM

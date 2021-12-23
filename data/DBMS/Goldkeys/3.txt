@@ -1,0 +1,18 @@
+Relational model
+Relation
+Query language
+SQL
+Relation schema
+Domain constraints
+Arity
+Data definition language
+Integrity constraint
+Key constraint
+Primary key
+Foreign Key
+ER diagram
+View
+Data independence
+
+
+

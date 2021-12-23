@@ -1,0 +1,17 @@
+Relational operators
+Query
+SQL
+Access path
+Selection
+Conjunctive normal form
+Disjunction
+Partitioning
+Join
+Buffer
+Hash join
+Index-only scan
+Sort-merge join
+SID
+Hybrid hash join
+Set operations
+Aggregate operation

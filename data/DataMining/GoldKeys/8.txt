@@ -1,0 +1,19 @@
+Clustering
+Outlier detection
+Extreme Value Analysis
+Normal distribution
+Multivariate Extreme Values 
+Probabilistic model
+Distance-Based Outlier
+Pruning
+Sampling
+Local Distance Correction
+Local Outlier Factor
+Mahalanobis Distance
+Density function
+Histogram
+Kernel Density Estimation
+Information-Theoretic Model
+Generative model
+Outlier Validity
+Receiver Operating Characteristic

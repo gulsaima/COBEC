@@ -1,0 +1,9 @@
+QBE
+Query-by-example
+Query
+Negation
+Relation
+Aggregate
+Aggregation
+Grouping
+Condition box

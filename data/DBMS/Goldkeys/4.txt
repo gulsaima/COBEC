@@ -1,0 +1,12 @@
+Relational calculus
+Relational algebra
+Calculus
+Algebra
+Set operations
+Join
+Tuple relational calculus
+Tuple
+Atomic formula
+Formula
+Variable
+Free variable

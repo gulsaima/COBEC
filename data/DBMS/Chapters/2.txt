@@ -1,0 +1,693 @@
+The entity-relationship (ER) data model allows us to describe the data involved in a
+real-world enterprise in terms of objects and their relationships and is widely used to
+develop an initial database design. In this chapter, we introduce the ER model and
+discuss how its features allow us to model a wide range of data faithfully.
+The ER model is important primarily for its role in database design. It provides useful
+concepts that allow us to move from an informal description of what users want from
+their database to a more detailed, and precise, description that can be implemented
+in a DBMS. We begin with an overview of database design in Section 2.1 in order
+to motivate our discussion of the ER model. Within the larger context of the overall
+design process, the ER model is used in a phase called conceptual database design. We
+then introduce the ER model in Sections 2.2, 2.3, and 2.4. In Section 2.5, we discuss
+database design issues involving the ER model. We conclude with a brief discussion of
+conceptual database design for large enterprises.
+We note that many variations of ER diagrams are in use, and no widely accepted
+standards prevail. The presentation in this chapter is representative of the family of
+ER models and includes a selection of the most popular features.
+2.1 OVERVIEW OF DATABASE DESIGN
+The database design process can be divided into six steps. The ER model is most
+relevant to the first three steps:
+(1) Requirements Analysis: The very first step in designing a database application
+is to understand what data is to be stored in the database, what applications must be
+built on top of it, and what operations are most frequent and subject to performance
+requirements. In other words, we must find out what the users want from the database.
+24The Entity-Relationship Model 25
+Database design tools: Design tools are available from RDBMS vendors as well
+as third-party vendors. Sybase and Oracle, in particular, have comprehensive sets
+design and analysis tools. See the following URL for details on Sybase’s tools:
+http://www.sybase.com/products/application tools The following provides
+details on Oracle’s tools: http://www.oracle.com/tools
+This is usually an informal process that involves discussions with user groups, a study
+of the current operating environment and how it is expected to change, analysis of
+any available documentation on existing applications that are expected to be replaced
+or complemented by the database, and so on. Several methodologies have been proposed for organizing and presenting the information gathered in this step, and some
+automated tools have been developed to support this process.
+(2) Conceptual Database Design: The information gathered in the requirements
+analysis step is used to develop a high-level description of the data to be stored in the
+database, along with the constraints that are known to hold over this data. This step
+is often carried out using the ER model, or a similar high-level data model, and is
+discussed in the rest of this chapter.
+(3) Logical Database Design: We must choose a DBMS to implement our database
+design, and convert the conceptual database design into a database schema in the data
+model of the chosen DBMS. We will only consider relational DBMSs, and therefore,
+the task in the logical design step is to convert an ER schema into a relational database
+schema. We discuss this step in detail in Chapter 3; the result is a conceptual schema,
+sometimes called the logical schema, in the relational data model.
+2.1.1 Beyond the ER Model
+ER modeling is sometimes regarded as a complete approach to designing a logical
+database schema. This is incorrect because the ER diagram is just an approximate
+description of the data, constructed through a very subjective evaluation of the information collected during requirements analysis. A more careful analysis can often refine
+the logical schema obtained at the end of Step 3. Once we have a good logical schema,
+we must consider performance criteria and design the physical schema. Finally, we
+must address security issues and ensure that users are able to access the data they
+need, but not data that we wish to hide from them. The remaining three steps of
+database design are briefly described below: 1
+1This material can be omitted on a first reading of this chapter without loss of continuity.26 Chapter 2
+(4) Schema Refinement: The fourth step in database design is to analyze the
+collection of relations in our relational database schema to identify potential problems,
+and to refine it. In contrast to the requirements analysis and conceptual design steps,
+which are essentially subjective, schema refinement can be guided by some elegant and
+powerful theory. We discuss the theory of normalizing relations—restructuring them
+to ensure some desirable properties—in Chapter 15.
+(5) Physical Database Design: In this step we must consider typical expected
+workloads that our database must support and further refine the database design to
+ensure that it meets desired performance criteria. This step may simply involve building indexes on some tables and clustering some tables, or it may involve a substantial
+redesign of parts of the database schema obtained from the earlier design steps. We
+discuss physical design and database tuning in Chapter 16.
+(6) Security Design: In this step, we identify different user groups and different
+roles played by various users (e.g., the development team for a product, the customer
+support representatives, the product manager). For each role and user group, we must
+identify the parts of the database that they must be able to access and the parts of the
+database that they should not be allowed to access, and take steps to ensure that they
+can access only the necessary parts. A DBMS provides several mechanisms to assist
+in this step, and we discuss this in Chapter 17.
+In general, our division of the design process into steps should be seen as a classification
+of the kinds of steps involved in design. Realistically, although we might begin with
+the six step process outlined here, a complete database design will probably require
+a subsequent tuning phase in which all six kinds of design steps are interleaved and
+repeated until the design is satisfactory. Further, we have omitted the important steps
+of implementing the database design, and designing and implementing the application
+layers that run on top of the DBMS. In practice, of course, these additional steps can
+lead to a rethinking of the basic database design.
+The concepts and techniques that underlie a relational DBMS are clearly useful to
+someone who wants to implement or maintain the internals of a database system.
+However, it is important to recognize that serious users and DBAs must also know
+how a DBMS works. A good understanding of database system internals is essential
+for a user who wishes to take full advantage of a DBMS and design a good database;
+this is especially true of physical design and database tuning.
+2.2 ENTITIES, ATTRIBUTES, AND ENTITY SETS
+An entity is an object in the real world that is distinguishable from other objects.
+Examples include the following: the Green Dragonzord toy, the toy department, the
+manager of the toy department, the home address of the manager of the toy depart-The Entity-Relationship Model 27
+ment. It is often useful to identify a collection of similar entities. Such a collection is
+called an entity set. Note that entity sets need not be disjoint; the collection of toy
+department employees and the collection of appliance department employees may both
+contain employee John Doe (who happens to work in both departments). We could
+also define an entity set called Employees that contains both the toy and appliance
+department employee sets.
+An entity is described using a set of attributes. All entities in a given entity set have
+the same attributes; this is essentially what we mean by similar. (This statement is
+an oversimplification, as we will see when we discuss inheritance hierarchies in Section
+2.4.4, but it suffices for now and highlights the main idea.) Our choice of attributes
+reflects the level of detail at which we wish to represent information about entities.
+For example, the Employees entity set could use name, social security number (ssn),
+and parking lot (lot) as attributes. In this case we will store the name, social security number, and lot number for each employee. However, we will not store, say, an
+employee’s address (or gender or age).
+For each attribute associated with an entity set, we must identify a domain of possible
+values. For example, the domain associated with the attribute name of Employees
+might be the set of 20-character strings.2 As another example, if the company rates
+employees on a scale of 1 to 10 and stores ratings in a field called rating, the associated
+domain consists of integers 1 through 10. Further, for each entity set, we choose a key.
+A key is a minimal set of attributes whose values uniquely identify an entity in the
+set. There could be more than one candidate key; if so, we designate one of them as
+the primary key. For now we will assume that each entity set contains at least one
+set of attributes that uniquely identifies an entity in the entity set; that is, the set of
+attributes contains a key. We will revisit this point in Section 2.4.3.
+The Employees entity set with attributes ssn, name, and lot is shown in Figure 2.1.
+An entity set is represented by a rectangle, and an attribute is represented by an oval.
+Each attribute in the primary key is underlined. The domain information could be
+listed along with the attribute name, but we omit this to keep the figures compact.
+The key is ssn.
+2.3 RELATIONSHIPS AND RELATIONSHIP SETS
+A relationship is an association among two or more entities. For example, we may
+have the relationship that Attishoo works in the pharmacy department. As with
+entities, we may wish to collect a set of similar relationships into a relationship set.
+2To avoid confusion, we will assume that attribute names do not repeat across entity sets. This is
+not a real limitation because we can always use the entity set name to resolve ambiguities if the same
+attribute name is used in more than one entity set.28 Chapter 2
+Employees
+ssn
+name
+lot
+Figure 2.1 The Employees Entity Set
+A relationship set can be thought of as a set of n-tuples:
+{(e1,...,en) | e1 ∈ E1,...,en ∈ En}
+Each n-tuple denotes a relationship involving n entities e1 through en, where entity ei
+is in entity set Ei. In Figure 2.2 we show the relationship set Works In, in which each
+relationship indicates a department in which an employee works. Note that several
+relationship sets might involve the same entity sets. For example, we could also have
+a Manages relationship set involving Employees and Departments.
+dname
+budgetdid
+since
+name
+Employees Works_In Departments
+ssn lot
+Figure 2.2 The Works In Relationship Set
+A relationship can also have descriptive attributes. Descriptive attributes are used
+to record information about the relationship, rather than about any one of the participating entities; for example, we may wish to record that Attishoo works in the
+pharmacy department as of January 1991. This information is captured in Figure 2.2
+by adding an attribute, since, to Works In. A relationship must be uniquely identified
+by the participating entities, without reference to the descriptive attributes. In the
+Works In relationship set, for example, each Works In relationship must be uniquely
+identified by the combination of employee ssn and department did. Thus, for a given
+employee-department pair, we cannot have more than one associated since value.
+An instance of a relationship set is a set of relationships. Intuitively, an instance
+can be thought of as a ‘snapshot’ of the relationship set at some instant in time. An
+instance of the Works In relationship set is shown in Figure 2.3. Each Employees entity
+is denoted by its ssn, and each Departments entity is denoted by its did, for simplicity.The Entity-Relationship Model 29
+The since value is shown beside each relationship. (The ‘many-to-many’ and ‘total
+participation’ comments in the figure will be discussed later, when we discuss integrity
+constraints.)
+131-24-3650
+231-31-5368
+223-32-6316
+123-22-3666
+1/1/91
+3/3/93
+2/2/92
+3/1/92
+3/1/92
+51
+56
+60
+EMPLOYEES
+Total participation
+WORKS_IN
+Many to Many
+DEPARTMENTS
+Total participation
+Figure 2.3 An Instance of the Works In Relationship Set
+As another example of an ER diagram, suppose that each department has offices in
+several locations and we want to record the locations at which each employee works.
+This relationship is ternary because we must record an association between an employee, a department, and a location. The ER diagram for this variant of Works In,
+which we call Works In2, is shown in Figure 2.4.
+dname
+budgetdid
+since
+name
+Employees
+ssn lot
+Locations
+Departments
+capacityaddress
+Works_In2
+Figure 2.4 A Ternary Relationship Set
+The entity sets that participate in a relationship set need not be distinct; sometimes
+a relationship might involve two entities in the same entity set. For example, consider
+the Reports To relationship set that is shown in Figure 2.5. Since employees report
+to other employees, every relationship in Reports To is of the form (emp1, emp2),30 Chapter 2
+where both emp1 and emp2 are entities in Employees. However, they play different
+roles: emp1 reports to the managing employee emp2, which is reflected in the role
+indicators supervisor and subordinate in Figure 2.5. If an entity set plays more than
+one role, the role indicator concatenated with an attribute name from the entity set
+gives us a unique name for each attribute in the relationship set. For example, the
+Reports To relationship set has attributes corresponding to the ssn of the supervisor
+and the ssn of the subordinate, and the names of these attributes are supervisor ssn
+and subordinate ssn.
+Reports_To
+name
+Employees
+subordinatesupervisor
+ssn lot
+Figure 2.5 The Reports To Relationship Set
+2.4 ADDITIONAL FEATURES OF THE ER MODEL
+We now look at some of the constructs in the ER model that allow us to describe some
+subtle properties of the data. The expressiveness of the ER model is a big reason for
+its widespread use.
+2.4.1 Key Constraints
+Consider the Works In relationship shown in Figure 2.2. An employee can work in
+several departments, and a department can have several employees, as illustrated in
+the Works In instance shown in Figure 2.3. Employee 231-31-5368 has worked in
+Department 51 since 3/3/93 and in Department 56 since 2/2/92. Department 51 has
+two employees.
+Now consider another relationship set called Manages between the Employees and Departments entity sets such that each department has at most one manager, although a
+single employee is allowed to manage more than one department. The restriction that
+each department has at most one manager is an example of a key constraint, and
+it implies that each Departments entity appears in at most one Manages relationshipThe Entity-Relationship Model 31
+in any allowable instance of Manages. This restriction is indicated in the ER diagram
+of Figure 2.6 by using an arrow from Departments to Manages. Intuitively, the arrow states that given a Departments entity, we can uniquely determine the Manages
+relationship in which it appears.
+name dname
+budgetdid
+since
+ManagesEmployees Departments
+ssn lot
+Figure 2.6 Key Constraint on Manages
+An instance of the Manages relationship set is shown in Figure 2.7. While this is also
+a potential instance for the Works In relationship set, the instance of Works In shown
+in Figure 2.3 violates the key constraint on Manages.
+131-24-3650
+231-31-5368
+223-32-6316
+123-22-3666
+51
+56
+60
+EMPLOYEES MANAGES DEPARTMENTS
+Total participationOne to ManyPartial participation
+3/3/93
+2/2/92
+3/1/92
+Figure 2.7 An Instance of the Manages Relationship Set
+A relationship set like Manages is sometimes said to be one-to-many, to indicate that
+one employee can be associated with many departments (in the capacity of a manager),
+whereas each department can be associated with at most one employee as its manager.
+In contrast, the Works In relationship set, in which an employee is allowed to work in
+several departments and a department is allowed to have several employees, is said to
+be many-to-many.32 Chapter 2
+If we add the restriction that each employee can manage at most one department
+to the Manages relationship set, which would be indicated by adding an arrow from
+Employees to Manages in Figure 2.6, we have a one-to-one relationship set.
+Key Constraints for Ternary Relationships
+We can extend this convention—and the underlying key constraint concept—to relationship sets involving three or more entity sets: If an entity set E has a key constraint
+in a relationship set R, each entity in an instance of E appears in at most one relationship in (a corresponding instance of) R. To indicate a key constraint on entity set
+E in relationship set R, we draw an arrow from E to R.
+In Figure 2.8, we show a ternary relationship with key constraints. Each employee
+works in at most one department, and at a single location. An instance of the
+Works In3 relationship set is shown in Figure 2.9. Notice that each department can be
+associated with several employees and locations, and each location can be associated
+with several departments and employees; however, each employee is associated with a
+single department and location.
+dname
+budgetdid
+since
+name
+Employees
+ssn lot
+Locations
+Departments
+capacityaddress
+Works_In3
+Figure 2.8 A Ternary Relationship Set with Key Constraints
+2.4.2 Participation Constraints
+The key constraint on Manages tells us that a department has at most one manager.
+A natural question to ask is whether every department has a manager. Let us say that
+every department is required to have a manager. This requirement is an example of
+a participation constraint; the participation of the entity set Departments in the
+relationship set Manages is said to be total. A participation that is not total is said to
+be partial. As an example, the participation of the entity set Employees in Manages
+is partial, since not every employee gets to manage a department.The Entity-Relationship Model 33
+131-24-3650
+231-31-5368
+223-32-6316
+123-22-3666
+EMPLOYEES
+51
+56
+60
+Rome
+Delhi
+Paris
+3/3/93
+2/2/92
+3/1/92
+3/1/92
+WORKS_IN3
+Key constraint
+DEPARTMENTS
+LOCATIONS
+Figure 2.9 An Instance of Works In3
+Revisiting the Works In relationship set, it is natural to expect that each employee
+works in at least one department and that each department has at least one employee.
+This means that the participation of both Employees and Departments in Works In
+is total. The ER diagram in Figure 2.10 shows both the Manages and Works In
+relationship sets and all the given constraints. If the participation of an entity set
+in a relationship set is total, the two are connected by a thick line; independently,
+the presence of an arrow indicates a key constraint. The instances of Works In and
+Manages shown in Figures 2.3 and 2.7 satisfy all the constraints in Figure 2.10.
+2.4.3 Weak Entities
+Thus far, we have assumed that the attributes associated with an entity set include a
+key. This assumption does not always hold. For example, suppose that employees can
+purchase insurance policies to cover their dependents. We wish to record information
+about policies, including who is covered by each policy, but this information is really
+our only interest in the dependents of an employee. If an employee quits, any policy
+owned by the employee is terminated and we want to delete all the relevant policy and
+dependent information from the database.
+We might choose to identify a dependent by name alone in this situation, since it is reasonable to expect that the dependents of a given employee have different names. Thus
+the attributes of the Dependents entity set might be pname and age. The attribute
+pname does not identify a dependent uniquely. Recall that the key for Employees is34 Chapter 2
+name dname
+budgetdid
+since
+Manages
+since
+Employees Departments
+ssn
+Works_In
+lot
+Figure 2.10 Manages and Works In
+ssn; thus we might have two employees called Smethurst, and each might have a son
+called Joe.
+Dependents is an example of a weak entity set. A weak entity can be identified
+uniquely only by considering some of its attributes in conjunction with the primary
+key of another entity, which is called the identifying owner.
+The following restrictions must hold:
+The owner entity set and the weak entity set must participate in a one-to-many
+relationship set (one owner entity is associated with one or more weak entities,
+but each weak entity has a single owner). This relationship set is called the
+identifying relationship set of the weak entity set.
+The weak entity set must have total participation in the identifying relationship
+set.
+For example, a Dependents entity can be identified uniquely only if we take the key
+of the owning Employees entity and the pname of the Dependents entity. The set of
+attributes of a weak entity set that uniquely identify a weak entity for a given owner
+entity is called a partial key of the weak entity set. In our example pname is a partial
+key for Dependents.
+The Dependents weak entity set and its relationship to Employees is shown in Figure 2.11. The total participation of Dependents in Policy is indicated by linking themThe Entity-Relationship Model 35
+with a dark line. The arrow from Dependents to Policy indicates that each Dependents
+entity appears in at most one (indeed, exactly one, because of the participation constraint) Policy relationship. To underscore the fact that Dependents is a weak entity
+and Policy is its identifying relationship, we draw both with dark lines. To indicate
+that pname is a partial key for Dependents, we underline it using a broken line. This
+means that there may well be two dependents with the same pname value.
+name
+pname age
+Employees Dependents
+ssn
+Policy
+cost
+lot
+Figure 2.11 A Weak Entity Set
+2.4.4 Class Hierarchies
+Sometimes it is natural to classify the entities in an entity set into subclasses. For
+example, we might want to talk about an Hourly Emps entity set and a Contract Emps
+entity set to distinguish the basis on which they are paid. We might have attributes
+hours worked and hourly wage defined for Hourly Emps and an attribute contractid
+defined for Contract Emps.
+We want the semantics that every entity in one of these sets is also an Employees entity,
+and as such must have all of the attributes of Employees defined. Thus, the attributes
+defined for an Hourly Emps entity are the attributes for Employees plus Hourly Emps.
+We say that the attributes for the entity set Employees are inherited by the entity
+set Hourly Emps, and that Hourly Emps ISA (read is a) Employees. In addition—
+and in contrast to class hierarchies in programming languages such as C++—there is
+a constraint on queries over instances of these entity sets: A query that asks for all
+Employees entities must consider all Hourly Emps and Contract Emps entities as well.
+Figure 2.12 illustrates the class hierarchy.
+The entity set Employees may also be classified using a different criterion. For example,
+we might identify a subset of employees as Senior Emps. We can modify Figure 2.12
+to reflect this change by adding a second ISA node as a child of Employees and making
+Senior Emps a child of this node. Each of these entity sets might be classified further,
+creating a multilevel ISA hierarchy.
+A class hierarchy can be viewed in one of two ways:36 Chapter 2
+name
+ISA
+ssn
+EmployeeEmployees
+Hourly_Emps Contract_Emps
+lot
+hours_worked contractid
+hourly_wages
+Figure 2.12 Class Hierarchy
+Employees is specialized into subclasses. Specialization is the process of identifying subsets of an entity set (the superclass) that share some distinguishing
+characteristic. Typically the superclass is defined first, the subclasses are defined
+next, and subclass-specific attributes and relationship sets are then added.
+Hourly Emps and Contract Emps are generalized by Employees. As another
+example, two entity sets Motorboats and Cars may be generalized into an entity
+set Motor Vehicles. Generalization consists of identifying some common characteristics of a collection of entity sets and creating a new entity set that contains
+entities possessing these common characteristics. Typically the subclasses are defined first, the superclass is defined next, and any relationship sets that involve
+the superclass are then defined.
+We can specify two kinds of constraints with respect to ISA hierarchies, namely, overlap
+and covering constraints. Overlap constraints determine whether two subclasses are
+allowed to contain the same entity. For example, can Attishoo be both an Hourly Emps
+entity and a Contract Emps entity? Intuitively, no. Can he be both a Contract Emps
+entity and a Senior Emps entity? Intuitively, yes. We denote this by writing ‘Contract Emps OVERLAPS Senior Emps.’ In the absence of such a statement, we assume
+by default that entity sets are constrained to have no overlap.
+Covering constraints determine whether the entities in the subclasses collectively
+include all entities in the superclass. For example, does every Employees entity have
+to belong to one of its subclasses? Intuitively, no. Does every Motor Vehicles entity
+have to be either a Motorboats entity or a Cars entity? Intuitively, yes; a characteristic property of generalization hierarchies is that every instance of a superclass is
+an instance of a subclass. We denote this by writing ‘Motorboats AND Cars COVERThe Entity-Relationship Model 37
+Motor Vehicles.’ In the absence of such a statement, we assume by default that there
+is no covering constraint; we can have motor vehicles that are not motorboats or cars.
+There are two basic reasons for identifying subclasses (by specialization or generalization):
+1. We might want to add descriptive attributes that make sense only for the entities
+in a subclass. For example, hourly wages does not make sense for a Contract Emps
+entity, whose pay is determined by an individual contract.
+2. We might want to identify the set of entities that participate in some relationship. For example, we might wish to define the Manages relationship so that the
+participating entity sets are Senior Emps and Departments, to ensure that only
+senior employees can be managers. As another example, Motorboats and Cars
+may have different descriptive attributes (say, tonnage and number of doors), but
+as Motor Vehicles entities, they must be licensed. The licensing information can
+be captured by a Licensed To relationship between Motor Vehicles and an entity
+set called Owners.
+2.4.5 Aggregation
+As we have defined it thus far, a relationship set is an association between entity sets.
+Sometimes we have to model a relationship between a collection of entities and relationships. Suppose that we have an entity set called Projects and that each Projects
+entity is sponsored by one or more departments. The Sponsors relationship set captures this information. A department that sponsors a project might assign employees
+to monitor the sponsorship. Intuitively, Monitors should be a relationship set that
+associates a Sponsors relationship (rather than a Projects or Departments entity) with
+an Employees entity. However, we have defined relationships to associate two or more
+entities.
+In order to define a relationship set such as Monitors, we introduce a new feature of the
+ER model, called aggregation. Aggregation allows us to indicate that a relationship
+set (identified through a dashed box) participates in another relationship set. This is
+illustrated in Figure 2.13, with a dashed box around Sponsors (and its participating
+entity sets) used to denote aggregation. This effectively allows us to treat Sponsors as
+an entity set for purposes of defining the Monitors relationship set.
+When should we use aggregation? Intuitively, we use it when we need to express a
+relationship among relationships. But can’t we express relationships involving other
+relationships without using aggregation? In our example, why not make Sponsors a
+ternary relationship? The answer is that there are really two distinct relationships,
+Sponsors and Monitors, each possibly with attributes of its own. For instance, the38 Chapter 2
+until
+since
+name
+budgetdidpid
+started_on
+pbudget
+dname
+ssn
+DepartmentsProjects Sponsors
+Employees
+Monitors
+lot
+Figure 2.13 Aggregation
+Monitors relationship has an attribute until that records the date until when the employee is appointed as the sponsorship monitor. Compare this attribute with the
+attribute since of Sponsors, which is the date when the sponsorship took effect. The
+use of aggregation versus a ternary relationship may also be guided by certain integrity
+constraints, as explained in Section 2.5.4.
+2.5 CONCEPTUAL DATABASE DESIGN WITH THE ER MODEL
+Developing an ER diagram presents several choices, including the following:
+Should a concept be modeled as an entity or an attribute?
+Should a concept be modeled as an entity or a relationship?
+What are the relationship sets and their participating entity sets? Should we use
+binary or ternary relationships?
+Should we use aggregation?
+We now discuss the issues involved in making these choices.The Entity-Relationship Model 39
+2. 1 Entity versus Attribute
+While identifying the attributes of an entity set, it is sometimes not clear whether a
+property should be modeled as an attribute or as an entity set (and related to the first
+entity set using a relationship set). For example, consider adding address information
+to the Employees entity set. One option is to use an attribute address. This option is
+appropriate if we need to record only one address per employee, and it suffices to think
+of an address as a string. An alternative is to create an entity set called Addresses
+and to record associations between employees and addresses using a relationship (say,
+Has Address). This more complex alternative is necessary in two situations:
+We have to record more than one address for an employee.
+We want to capture the structure of an address in our ER diagram. For example,
+we might break down an address into city, state, country, and Zip code, in addition
+to a string for street information. By representing an address as an entity with
+these attributes, we can support queries such as “Find all employees with an
+address in Madison, WI.”
+For another example of when to model a concept as an entity set rather than as an
+attribute, consider the relationship set (called Works In2) shown in Figure 2.14.
+dname
+budgetdid
+name
+Employees Departments
+ssn lot
+from to
+Works_In2
+Figure 2.14 The Works In2 Relationship Set
+It differs from the Works In relationship set of Figure 2.2 only in that it has attributes
+from and to, instead of since. Intuitively, it records the interval during which an
+employee works for a department. Now suppose that it is possible for an employee to
+work in a given department over more than one period.
+This possibility is ruled out by the ER diagram’s semantics. The problem is that
+we want to record several values for the descriptive attributes for each instance of
+the Works In2 relationship. (This situation is analogous to wanting to record several
+addresses for each employee.) We can address this problem by introducing an entity
+set called, say, Duration, with attributes from and to, as shown in Figure 2.15.
+5.40 Chapter 2
+dname
+budgetdid
+name
+Departments
+ssn lot
+from to
+Employees Works_In4
+Duration
+Figure 2.15 The Works In4 Relationship Set
+In some versions of the ER model, attributes are allowed to take on sets as values.
+Given this feature, we could make Duration an attribute of Works In, rather than an
+entity set; associated with each Works In relationship, we would have a set of intervals.
+This approach is perhaps more intuitive than modeling Duration as an entity set.
+Nonetheless, when such set-valued attributes are translated into the relational model,
+which does not support set-valued attributes, the resulting relational schema is very
+similar to what we get by regarding Duration as an entity set.
+2.5.2 Entity versus Relationship
+Consider the relationship set called Manages in Figure 2.6. Suppose that each department manager is given a discretionary budget (dbudget), as shown in Figure 2.16, in
+which we have also renamed the relationship set to Manages2.
+name dname
+budgetdid
+Employees Departments
+ssn lot
+dbudgetsince
+Manages2
+Figure 2.16 Entity versus Relationship
+There is at most one employee managing a department, but a given employee could
+manage several departments; we store the starting date and discretionary budget for
+each manager-department pair. This approach is natural if we assume that a manager
+receives a separate discretionary budget for each department that he or she manages.The Entity-Relationship Model 41
+But what if the discretionary budget is a sum that covers all departments managed by
+that employee? In this case each Manages2 relationship that involves a given employee
+will have the same value in the dbudget field. In general such redundancy could be
+significant and could cause a variety of problems. (We discuss redundancy and its
+attendant problems in Chapter 15.) Another problem with this design is that it is
+misleading.
+We can address these problems by associating dbudget with the appointment of the
+employee as manager of a group of departments. In this approach, we model the
+appointment as an entity set, say Mgr Appt, and use a ternary relationship, say Manages3, to relate a manager, an appointment, and a department. The details of an
+appointment (such as the discretionary budget) are not repeated for each department
+that is included in the appointment now, although there is still one Manages3 relationship instance per such department. Further, note that each department has at most
+one manager, as before, because of the key constraint. This approach is illustrated in
+Figure 2.17.
+Employees
+name dname
+budgetdid
+Departments
+ssn lot
+Mgr_Appts
+Manages3
+dbudget
+apptnum
+since
+Figure 2.17 Entity Set versus Relationship
+2.5.3 Binary versus Ternary Relationships *
+Consider the ER diagram shown in Figure 2.18. It models a situation in which an
+employee can own several policies, each policy can be owned by several employees, and
+each dependent can be covered by several policies.
+Suppose that we have the following additional requirements:
+A policy cannot be owned jointly by two or more employees.
+Every policy must be owned by some employee.42 Chapter 2
+name
+pname age
+Employees Dependents
+ssn
+Covers
+policyid cost
+lot
+Policies
+Figure 2.18 Policies as an Entity Set
+Dependents is a weak entity set, and each dependent entity is uniquely identified by
+taking pname in conjunction with the policyid of a policy entity (which, intuitively,
+covers the given dependent).
+The first requirement suggests that we impose a key constraint on Policies with respect
+to Covers, but this constraint has the unintended side effect that a policy can cover only
+one dependent. The second requirement suggests that we impose a total participation
+constraint on Policies. This solution is acceptable if each policy covers at least one
+dependent. The third requirement forces us to introduce an identifying relationship
+that is binary (in our version of ER diagrams, although there are versions in which
+this is not the case).
+Even ignoring the third point above, the best way to model this situation is to use two
+binary relationships, as shown in Figure 2.19.
+This example really had two relationships involving Policies, and our attempt to use
+a single ternary relationship (Figure 2.18) was inappropriate. There are situations,
+however, where a relationship inherently associates more than two entities. We have
+seen such an example in Figure 2.4 and also Figures 2.15 and 2.17.
+As a good example of a ternary relationship, consider entity sets Parts, Suppliers, and
+Departments, and a relationship set Contracts (with descriptive attribute qty) that
+involves all of them. A contract specifies that a supplier will supply (some quantity of)
+a part to a department. This relationship cannot be adequately captured by a collection
+of binary relationships (without the use of aggregation). With binary relationships, we
+can denote that a supplier ‘can supply’ certain parts, that a department ‘needs’ someThe Entity-Relationship Model 43
+name
+pname age
+Employees Dependents
+ssn
+policyid cost
+Beneficiary
+lot
+Policies
+Purchaser
+Figure 2.19 Policy Revisited
+parts, or that a department ‘deals with’ a certain supplier. No combination of these
+relationships expresses the meaning of a contract adequately, for at least two reasons:
+The facts that supplier S can supply part P, that department D needs part P, and
+that D will buy from S do not necessarily imply that department D indeed buys
+part P from supplier S!
+We cannot represent the qty attribute of a contract cleanly.
+2.5.4 Aggregation versus Ternary Relationships *
+As we noted in Section 2.4.5, the choice between using aggregation or a ternary relationship is mainly determined by the existence of a relationship that relates a relationship
+set to an entity set (or second relationship set). The choice may also be guided by
+certain integrity constraints that we want to express. For example, consider the ER
+diagram shown in Figure 2.13. According to this diagram, a project can be sponsored
+by any number of departments, a department can sponsor one or more projects, and
+each sponsorship is monitored by one or more employees. If we don’t need to record
+the until attribute of Monitors, then we might reasonably use a ternary relationship,
+say, Sponsors2, as shown in Figure 2.20.
+Consider the constraint that each sponsorship (of a project by a department) be monitored by at most one employee. We cannot express this constraint in terms of the
+Sponsors2 relationship set. On the other hand, we can easily express the constraint
+by drawing an arrow from the aggregated relationship Sponsors to the relationship44 Chapter 2
+budgetdidpid
+started_on
+pbudget
+dname
+DepartmentsProjects Sponsors2
+name
+ssn
+Employees
+lot
+Figure 2.20 Using a Ternary Relationship instead of Aggregation
+Monitors in Figure 2.13. Thus, the presence of such a constraint serves as another
+reason for using aggregation rather than a ternary relationship set.
+2.6 CONCEPTUAL DESIGN FOR LARGE ENTERPRISES *
+We have thus far concentrated on the constructs available in the ER model for describing various application concepts and relationships. The process of conceptual design
+consists of more than just describing small fragments of the application in terms of
+ER diagrams. For a large enterprise, the design may require the efforts of more than
+one designer and span data and application code used by a number of user groups.
+Using a high-level, semantic data model such as ER diagrams for conceptual design in
+such an environment offers the additional advantage that the high-level design can be
+diagrammatically represented and is easily understood by the many people who must
+provide input to the design process.
+An important aspect of the design process is the methodology used to structure the
+development of the overall design and to ensure that the design takes into account all
+user requirements and is consistent. The usual approach is that the requirements of
+various user groups are considered, any conflicting requirements are somehow resolved,
+and a single set of global requirements is generated at the end of the requirements
+analysis phase. Generating a single set of global requirements is a difficult task, but
+it allows the conceptual design phase to proceed with the development of a logical
+schema that spans all the data and applications throughout the enterprise.The Entity-Relationship Model 45
+An alternative approach is to develop separate conceptual schemas for different user
+groups and to then integrate these conceptual schemas. To integrate multiple conceptual schemas, we must establish correspondences between entities, relationships, and
+attributes, and we must resolve numerous kinds of conflicts (e.g., naming conflicts,
+domain mismatches, differences in measurement units). This task is difficult in its
+own right. In some situations schema integration cannot be avoided—for example,
+when one organization merges with another, existing databases may have to be integrated. Schema integration is also increasing in importance as users demand access to
+heterogeneous data sources, often maintained by different organizations.
+2.7 POINTS TO REVIEW
+Database design has six steps: requirements analysis, conceptual database design,
+logical database design, schema refinement, physical database design, and security
+design. Conceptual design should produce a high-level description of the data,
+and the entity-relationship (ER) data model provides a graphical approach to this
+design phase. (Section 2.1)
+In the ER model, a real-world object is represented as an entity. An entity set is a
+collection of structurally identical entities. Entities are described using attributes.
+Each entity set has a distinguished set of attributes called a key that can be used
+to uniquely identify each entity. (Section 2.2)
+A relationship is an association between two or more entities. A relationship set
+is a collection of relationships that relate entities from the same entity sets. A
+relationship can also have descriptive attributes. (Section 2.3)
+A key constraint between an entity set S and a relationship set restricts instances
+of the relationship set by requiring that each entity of S participate in at most one
+relationship. A participation constraint between an entity set S and a relationship
+set restricts instances of the relationship set by requiring that each entity of S
+participate in at least one relationship. The identity and existence of a weak entity
+depends on the identity and existence of another (owner) entity. Class hierarchies
+organize structurally similar entities through inheritance into sub- and superclasses. Aggregation conceptually transforms a relationship set into an entity set
+such that the resulting construct can be related to other entity sets. (Section 2.4)
+Development of an ER diagram involves important modeling decisions. A thorough understanding of the problem being modeled is necessary to decide whether
+to use an attribute or an entity set, an entity or a relationship set, a binary or
+ternary relationship, or aggregation. (Section 2.5)
+Conceptual design for large enterprises is especially challenging because data from
+many sources, managed by many groups, is involved. (Section 2.6

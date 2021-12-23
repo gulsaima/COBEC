@@ -1,0 +1,18 @@
+Access control
+Database security
+Discretionary access control
+Privileges
+Mandatory access control
+Grant command
+Revoke command
+Integrity constraints
+Multilevel Relations
+polyinstantiation
+covert channels
+Database Administrator
+statistical database
+encryption
+encryption key
+Data Encryption Standard
+decryption algorithm
+

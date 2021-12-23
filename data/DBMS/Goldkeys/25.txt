@@ -1,0 +1,15 @@
+Object-oriented database system
+RDBMS
+OODBMS
+ADT
+BLOB
+Inheritance
+type constructors
+List
+Array
+Object
+Method
+Data type
+Pointer
+OQL
+

@@ -1,0 +1,26 @@
+Data mining
+Data mining process
+Data Preprocessing
+Analytical Phase
+Data types
+Nondependency-Oriented Data
+Multidimensional Data
+Categorical data
+Mixed Attribute Data
+Binary data
+Set Data
+Text Data
+Feature extraction
+Dependency-Oriented Data
+Time-Series
+Discrete Sequences and Strings
+Spatial Data
+Network data
+Graph Data
+Association Pattern Mining
+Outlier Detection
+Pattern Mining
+Clustering
+Outlier Detection
+Classification
+ 

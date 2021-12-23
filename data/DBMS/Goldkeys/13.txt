@@ -1,0 +1,10 @@
+Query optimization
+Query evaluation plan
+plan
+Relational algebra
+Pipelining
+Access methods
+Join
+Selection
+Index
+Cost

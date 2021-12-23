@@ -1,0 +1,13 @@
+spatial data
+point data
+raster data
+Region data
+Vector data
+Spatial query
+Nearest neighbor queries
+GIS
+Z-Ordering
+Region Quad tree
+Grid files
+concurrency control
+generalized search tree

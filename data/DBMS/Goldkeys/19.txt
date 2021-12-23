@@ -1,0 +1,18 @@
+Serializability
+Recoverability
+conflict serializable
+Strict schedule
+serializable schedules
+precedence graph
+view equivalent
+view serializable
+lock manager
+lock
+convoy
+Deadlock
+Deadlock detection
+Deadlock prevention
+phantom problem
+multiple-granularity locking
+Boat
+Timestamp

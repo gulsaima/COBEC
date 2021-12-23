@@ -1,0 +1,13 @@
+WEB
+HTML
+CGI
+Static pages
+Dynamic pages
+Application server
+XML
+JSP
+DTD
+keyword
+HITS
+URL
+XML-QL

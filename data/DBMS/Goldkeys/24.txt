@@ -1,0 +1,20 @@
+Data mining
+KDD
+Market Basket Analysis
+Association Rules
+Support
+Confidence
+ISA hierarchy
+Bayesian Networks
+Classification
+Regression
+Decision tree
+Groth phase
+Pruning phase
+split selection method
+AVC
+Clustering
+BIRCH
+Feaute selection
+Sampling
+Visualization

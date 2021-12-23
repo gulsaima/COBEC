@@ -1,0 +1,12 @@
+Query optimization
+Query block
+Having
+Order by
+SQL
+Cost
+Plan
+Histograms
+Relational algebra
+Projections
+Left-deep plans
+Rule-based optimization

@@ -1,0 +1,1276 @@
+Mining Graph Data
+“Structure is more important than content in the
+transmission of information.”—Abbie Hoffman
+17.1 Introduction
+Graphs are ubiquitous in a wide variety of application domains such as bioinformatics,
+chemical, semi-structured, and biological data. Many important properties of graphs can
+be related to their structure in these domains. Graph mining algorithms can, therefore, be
+leveraged for analyzing various domain-specific properties of graphs. Most graphs, encountered in real applications, are one of the two types:
+1. In applications such as chemical and biological data, a database of many small graphs
+is available. Each node is associated with a label that may or may not be unique to
+the node, depending on the application-specific scenario.
+2. In applications such as the Web and social networks, a single large graph is available.
+For example, the Web can be viewed as a very large graph, in which nodes correspond
+to Web pages (labeled by their URLs) and edges correspond to hyperlinks between
+nodes.
+The nature of the applications for these two types of data are quite different. Web and social
+network applications will be addressed in Chaps. 18 and 19, respectively. This chapter will
+therefore focus on the first scenario, in which many small graphs are available. A graph
+database may be formally defined as follows.
+Definition 17.1.1 (Graph Database) A graph database D is a collection of n different
+undirected graphs, G1 = (N1, A1)...Gn = (Nn, An), such that the set of nodes in the ith
+graph is denoted by Ni, and the set of edges in the ith graph is denoted by Ai. Each node
+p ∈ Ni is associated with a label denoted by l(p).
+The labels associated with the nodes may be repeated within a single graph. For example,
+when each graph Gi corresponds to a chemical compound, the label of the node is the
+C. C. Aggarwal, Data Mining: The Textbook, DOI 10.1007/978-3-319-14142-8 17 557
+c Springer International Publishing Switzerland 2015
+558 CHAPTER 17. MINING GRAPH DATA
+OH
+N
+H
+C CH3
+O
+O
+1
+H 1
+C
+C C
+2 1
+1 H H 1
+C
+C
+C H
+2
+1 2
+1
+1 H 1
+C
+N C C
+H 2 1
+1 1
+1 H 1 1
+HOH
+1 1 2
+(a) Acetaminophen (b) Graph representation
+Figure 17.1: A chemical compound (Acetaminophen) and its associated graph representation
+symbol denoting a chemical element. Because of the presence of multiple atoms of the same
+element, such a graph will contain label repetitions. The repetition of labels within a single
+graph leads to numerous challenges in graph matching and distance computation.
+Graph data are encountered in many real applications. Some examples of key applications of graph data mining are as follows:
+• Chemical and biological data can be expressed as graphs in which each node corresponds to an atom and a bond between a pair of atoms is represented by an edge. The
+edges may be weighted to reflect bond strength. An example of a chemical compound
+and its corresponding graph are illustrated in Fig. 17.1. Figure 17.1a shows an illustration of the chemical acetaminophen, a well-known analgesic. The corresponding graph
+representation is illustrated in Fig. 17.1b along with node labels and edge weights. In
+many graph mining applications, unit edge weights are assumed as a simplification.
+• XML data can be expressed as attributed graphs. The relationships between different
+attributes of a structured record can be expressed as edges.
+• Virtually any data type can be expressed as an entity-relationship graph. This provides
+a different way of mining conventional database records when they are expressed in
+the form of entity-relationship graphs.
+Graph data are very powerful because of their ability to model arbitrary relationships
+between objects. The flexibility in graph representation comes at the price of greater computational complexity:
+1. Graphs lack the “flat” structure of multidimensional or even contextual (e.g., time
+series) data. The latter is much easier to analyze with conventional models.
+2. The repetition of labels among nodes leads to problems of isomorphism in computing
+similarity between graphs. This problem is NP-hard. This leads to computational
+challenges in similarity computation and graph matching.
+17.2. MATCHING AND DISTANCE COMPUTATION IN GRAPHS 559
+The second issue is of considerable importance, because both matching and distance computation are fundamental subproblems in graph mining applications. For example, in a frequent subgraph mining application, an important subproblem is that of subgraph matching.
+This chapter is organized as follows. Section 17.2 addresses the problem of matching
+and distance computation in graphs. Graph transformation methods for distance computation are discussed in Sect. 17.3. An important part of this section is the preprocessing
+methodologies, such as topological descriptors and kernel methods, that are often used for
+distance computation. Section 17.4 addresses the problem of pattern mining in graphs. The
+problem of clustering graphs is addressed in Sect. 17.5. Graph classification is addressed in
+Sect. 17.6. A summary is provided in Sect. 17.7.
+17.2 Matching and Distance Computation in Graphs
+The problems of matching and distance computation are closely related in the graph domain.
+Two graphs are said to match when a one-to-one correspondence can be established between
+the nodes of the two graphs, such that their labels match, and the edge presence between
+corresponding nodes match. The distance between such a pair of graphs is zero. Therefore,
+the problem of distance computation between a pair of graphs is at least as hard as that of
+graph matching. Matching graphs are also said to be isomorphic.
+It should be pointed out that the term “matching” is used in two distinct contexts for
+graph mining, which can sometimes be confusing. For example, pairing up nodes in a single
+graph with the use of edges is also referred to as matching. Throughout this chapter, unless
+otherwise specified, our focus is not on the node matching problem, but the pairwise graph
+matching problem. This problem is also referred to as that of graph isomorphism.
+Definition 17.2.1 (Graph Matching and Isomorphism) Two graphs G1 = (N1, A1)
+and G2 = (N2, A2) are isomorphic if and only if a one-to-one correspondence can be found
+between the nodes of N1 and N2 satisfying the following properties:
+1. For each pair of corresponding nodes i ∈ N1 and j ∈ N2, their labels are the same.
+l(i) = l(j)
+2. Let [i1, i2] be a node-pair in G1 and [j1, j2] be the corresponding node-pair in G2. Then
+the edge (i1, i2) exists in G1 if and only if the edge (j2, j2) exists in G2.
+The computational challenges in graph matching arise because of the repetition in node
+labels. For example, consider two methane molecules, illustrated in Fig. 17.2. While the
+unique carbon atom in the two molecules can be matched in exactly one way, the hydrogen
+atoms can be matched up in 4! = 24 different ways. Two possible matchings are illustrated
+in Figs. 17.2a and b, respectively. In general, greater the level of label repetition in each
+graph is, larger the number of possible matchings will be. The number of possible matchings
+between a pair of graphs increases exponentially with the size of the matched graphs. For a
+pair of graphs containing n nodes each, the number of possible matchings can be as large as
+n!. This makes the problem of matching a pair of graphs computationally very expensive.
+Lemma 17.2.1 The problem of determining whether a matching exists between a pair of
+graphs, is NP-hard.
+560 CHAPTER 17. MINING GRAPH DATA
+DASHED LINES INDICATE
+CORRESPONDENCE BETWEEN NODES
+H
+H
+H
+H
+C C
+H
+H
+H
+H
+METHANE MOLECULE 1 METHANE MOLECULE 2
+DASHED LINES INDICATE
+CORRESPONDENCE BETWEEN NODES
+H
+H
+H
+H
+C C
+H
+H
+H
+H
+METHANE MOLECULE 1 METHANE MOLECULE 2
+(a) (b)
+Figure 17.2: Two possible matchings between a pair of graphs representing methane
+molecules
+The bibliographic notes contain pointers to the proof of NP-hardness. When the graphs
+are very large, exact matches often do not exist. However, approximate matches may exist.
+The level of approximation is quantified with the use of a distance function. Therefore,
+distance function computation between graphs is a more general problem than that of
+graph matching, and it is at least as difficult. This issue will be discussed in detail in the
+next section.
+Another related problem is that of subgraph matching. Unlike the problem of exact
+graph matching, the query graph needs to be explicitly distinguished from the data graph
+in this case.
+Definition 17.2.2 (Node-Induced Subgraph) A node-induced subgraph of a graph G =
+(N,A) is a graph Gs = (Ns, As) satisfying the following properties:
+1. Ns ⊆ N
+2. As = A ∩ (Ns × Ns)
+In other words, all the edges in the original graph G between nodes in the subset Ns ⊆ N
+are included in the subgraph Gs.
+A subgraph isomorphism can be defined in terms of the node-induced subgraphs. A query
+graph Gq is a subgraph isomorphism of a data graph G, when it is an exact isomorphism
+of a node-induced subgraph of G.
+Definition 17.2.3 (Subgraph Matching and Isomorphism) A query graph Gq =
+(Nq, Aq) is a subgraph isomorphism of the data graph G = (N,A) if and only if the following conditions are satisfied:
+1. Each node in Nq should be matched to a unique node with the same label in N, but
+each node in N may not necessarily be matched. For each node i ∈ Nq, there must
+exist a unique matching node j ∈ N, such that their labels are the same.
+l(i) = l(j)
+2. Let [i1, i2] be a node-pair in Gq, and let [j1, j2] be the corresponding node-pair in G,
+based on the matching discussed above. Then, the edge (i1, i2) exists in Gq if and only
+if the edge (j1, j2) exists in G.
+17.2. MATCHING AND DISTANCE COMPUTATION IN GRAPHS 561
+G1
+DASHED LINES INDICATE
+CORRESPONDENCE BETWEEN NODES
+A
+E
+D A
+G2
+B B
+C A A
+G2 IS A SUBGRAPH
+ISOMORPHISM OF G1
+G1
+DASHED LINES INDICATE
+CORRESPONDENCE BETWEEN NODES
+A
+E
+D A
+G2
+B B
+C A A
+G2 IS A SUBGRAPH
+ISOMORPHISM OF G1
+(a) (b)
+Figure 17.3: Two possible subgraph isomorphisms between a pair of graphs
+The definition of subgraph isomorphism in this section assumes that all edges of the nodeinduced subgraph of the data graph are present in the query graph. In some applications,
+such as frequent subgraph mining, a more general definition is used, in which any subset
+of edges of the node-induced subgraph is also considered a subgraph isomorphism. The
+more general case can be handled with minor changes to the algorithm in this section.
+Note that the aforementioned definition allows the subgraph Gq (or G) to be disconnected.
+However, for practical applications, one is usually interested only in connected subgraph
+isomorphisms. Examples of two possible subgraph matchings between a pair of nodes are
+illustrated in Fig. 17.3. The figure also illustrates that there are two different ways for one
+graph to be a subgraph of the other. The problem of exact matching is a special case of
+subgraph matching. Therefore, the problem of subgraph matching is NP-hard as well.
+Lemma 17.2.2 The problem of subgraph matching is NP-hard.
+Subgraph matching is often used as a subroutine in applications such as frequent pattern
+mining. While the subgraph matching problem is a generalization of exact matching, the
+problem can be generalized even further to that of finding the maximum common subgraph
+(MCG) between a pair of graphs. This is because the MCG between two graphs is at most
+equal to the smaller of the two graphs when it is a subgraph of the larger one. The MCG
+or maximum common isomorphism between a pair of graphs is defined as follows.
+Definition 17.2.4 (Maximum Common Subgraph) A MCG between a pair of graphs
+G1 = (N1, A1) and G2 = (N2, A2) is a graph G0 = (N0, A0) that is a subgraph isomorphism
+of both G1 and G2, and for which the size of the node set N0 is as large as possible.
+Because the MCG problem is a generalization of the graph isomorphism problem, it is
+NP-hard as well. In this section, algorithms for discovering subgraph isomorphisms and
+maximum common subgraphs will be presented. Subsequently, the relationship of these
+algorithms to that of distance computation between graphs will be discussed. Subgraph
+isomorphism algorithms can be designed to determine either all the subgraph isomorphisms
+between a query graph and a data graph, or a fast algorithm can be designed to determine
+whether or not at least one isomorphism exists.
+562 CHAPTER 17. MINING GRAPH DATA
+17.2.1 Ullman’s Algorithm for Subgraph Isomorphism
+Ullman’s algorithm is designed to determine all possible subgraph isomorphisms between a
+query graph and a data graph. It can also be used for the decision problem of determining
+whether or not a query graph is a subgraph isomorphism of a data graph by using an early
+termination criterion. Interestingly, the majority of the later graph matching algorithms are
+refinements of Ullman’s algorithm. Therefore, this section will first present a very simplified
+version of Ullman’s algorithm without any refinements. Subsequently, the different variations
+and refinements of this basic algorithm will be discussed in a separate subsection. Although
+the definition of subgraph isomorphisms allows the query (or data) graph to be disconnected,
+it is often practical and computationally expedient to focus on cases where the query and
+data graph are connected. Typically, small changes to the algorithm can accommodate both
+cases (see Exercise 14).
+It will be assumed that the query graph is denoted by Gq = (Nq, Aq), and the data graph
+is denoted by G = (N,A). The first step in Ullman’s algorithm is to match all possible pairs
+of nodes across the two graphs so that each node in the pair has the same label as the
+other. For each such matching pair, the algorithm expands it a node at a time with the use
+of a recursive search procedure. Each recursive call expands the matching subgraphs in Gq
+and G by one node. Therefore, one of the parameters of the recursive call is the current
+matching set M of node-pairs. Each element of M is a pair of matching nodes between Gq
+and G. Therefore, when a subgraph of m nodes has been matched between the two graphs,
+the set M contains m matched node-pairs as follows:
+M = {(i
+q
+1, i1),(i
+q
+2, i2),...(i
+q
+m, im)}
+Here, it is assumed that the node i
+q
+r belongs to the query graph Gq and that the node ir
+belongs to the data graph G. The value of the matching set parameter M is initialized
+to the empty set at the top-level recursive call. The number of matched nodes in M is
+exactly equal to the depth of the recursive call. The recursion backtracks when either the
+subgraphs cannot be further matched or when Gq has been fully matched. In the latter
+case, the matching set M is reported, and the recursion backtracks to the next higher
+level to discover other matchings. In cases where it is not essential to determine all possible
+matchings between the pair of graphs, it is also possible to terminate the algorithm at this
+point. This particular exposition, however, assumes that all possible matchings need to be
+determined.
+A simplified version of Ullman’s algorithm is illustrated in Fig. 17.4. The algorithm is
+structured as a recursive approach that explores the space of all possible matchings between
+the two graphs. The input to the algorithm is the query graph Gq and the data graph G.
+An additional parameter M of this recursive call is a set containing the current matching
+node-pairs. While the set M is empty at the top-level call made by the analyst, this is not
+the case at lower levels of the recursion. The cardinality of M is exactly equal to the depth
+of the recursion. This is because one matching node-pair is added to M in each recursive
+call. Strictly speaking, the recursive call returns all the subgraph isomorphisms under the
+constraint that the matching corresponding to M must be respected.
+The first step of the recursive procedure is to check whether the size of M is equal to
+the number of nodes in the query graph Gq. If this is indeed the case, then the algorithm
+reports M as a successful subgraph matching and backtracks out of the recursion to the
+next higher level to explore other matchings. Otherwise, the algorithm tries to determine
+further matching node-pairs to add to M. This is the candidate generation step. In this
+17.2. MATCHING AND DISTANCE COMPUTATION IN GRAPHS 563
+Algorithm SubgraphMatch(Query Graph: Gq, Data Graph: G,
+Current Partially Matched Node Pairs: M)
+begin
+if (|M| = |Nq|) then return successful match M;
+(Case when |M| < |Nq|)
+C = Set of all label matching node pairs from (Gq, G) not in M;
+Prune C using heuristic methods; (Optional efficiency optimization)
+for each pair (iq, i) ∈ C do
+if M∪{(iq, i)} is a valid partial matching
+then SubgraphMatch(Gq, G,M∪{(iq, i)});
+endfor
+end
+Figure 17.4: The basic template of Ullman’s algorithm
+step, all possible label matching node-pairs between Gq and G, which are not already in
+M, are used to construct the candidate match set C.
+Because the number of candidate match extensions can be large, it is often desirable to
+prune them heuristically by using specific properties of the data graph and query graph.
+Some examples of such heuristics will be presented later. After the pruned set C has been
+generated, node-pairs (iq, i) ∈ C are selected one by one, and it is checked whether they
+can be added to M to create a valid (partial) matching between the two graphs. For
+M∪{(iq, i)} to be a valid partial matching, if iq ∈ Nq is incident on any already matched
+node jq in Gq, then i must also be incident on the matched counterpart j of jq in G, and
+vice versa. If a valid partial matching exists, then the procedure is called recursively with
+the partial matching M∪{(iq, i)}. After iterating through all such candidate extensions
+with corresponding recursive calls, the algorithm backtracks to the next higher level of the
+recursion.
+It is not difficult to see that the procedure has exponential complexity in terms of its
+input size, and it is especially sensitive to the query graph size. This high complexity is
+because the depth of the recursion can be of the order of the query graph size, and the
+number of recursive branches at each level is equal to the number of matching node-pairs.
+Clearly, unless the number of candidate extensions is carefully controlled with more effective
+candidate generation and pruning, the approach will be extremely slow.
+17.2.1.1 Algorithm Variations and Refinements
+Although the basic matching algorithm was originally proposed by Ullman, this template
+has been used extensively by different matching algorithms. The different algorithms vary
+from one another in terms of how the size of the candidate matched pairs is restricted
+with careful pruning. The use of carefully selected candidate sets has a significant impact
+on the efficiency of the algorithm. Most pruning methods rely on a number of natural
+constraints that are always satisfied by two graphs in a subgraph isomorphism relationship.
+Some common pruning rules are as follows:
+1. Ullman’s algorithm: This algorithm uses a simple pruning rule. All node-pairs (iq, i)
+are pruned from C in the pruning step if the degree of i is less than iq. This is because
+the degree of every matching node in the query subgraph needs to be no larger than
+the degree of its matching counterpart in the data graph.
+564 CHAPTER 17. MINING GRAPH DATA
+2. VF2 algorithm: In the VF2 algorithm, those candidates (iq, i) are pruned if iq is
+not connected to already matched nodes in Gq (i.e., nodes of Gq included in M).
+Subsequently, the pruning step also removes those node-pairs (iq, i) in which i is not
+connected to the matched nodes in the data graph G. These pruning rules assume that
+the query and data graphs are connected. The algorithm also compares the number
+of neighbor nodes of each of i and iq that are connected to nodes in M but are not
+included in M. The number of such nodes in the data graph must be no smaller than
+the number of such nodes in the query graph. Finally, the number of neighbor nodes
+of each of i and iq that are not directly connected to nodes in M are compared. The
+number of such nodes in the data graph must be no smaller than the number of such
+nodes in the query graph.
+3. Sequencing optimizations: The effectiveness of the pruning steps is sensitive to the
+order in which nodes are added to the matching set M. In general, nodes with rarer
+labels in the query graph should be selected first in the exploration of different candidate pairs in C. Rarer labels can be matched in fewer ways across graphs. Early
+exploration of rare labels leads to exploration of more relevant partial matches M at
+the earlier levels of the recursion. This also helps the pruning effectiveness. Enhanced
+versions of VF2 and QuickSI combine node sequencing and the aforementioned node
+pruning steps.
+The reader is referred to the bibliographic notes for details of these algorithms. The definition of subgraph isomorphism in this section assumes that all edges of the node-induced
+subgraph of the data graph are present in the query graph. In some applications, such as
+frequent subgraph mining, a more general definition is used, in which any subset of edges
+of the node-induced subgraph is also considered a subgraph isomorphism. The more general case can be solved with minor changes to the basic algorithm in which the criteria to
+generate candidates and validate them are both relaxed appropriately.
+17.2.2 Maximum Common Subgraph (MCG) Problem
+The MCG problem is a generalization of the subgraph isomorphism problem. The MCG
+between two graphs is at most equal to the smaller of the two, when one is a subgraph of
+the other. The basic principles of subgraph isomorphism algorithms can be extended easily
+to the MCG isomorphism problem. The following will discuss the extension of the Ullman
+algorithm to the MCG problem. The main differences between these methods are in terms
+of the pruning criteria and the fact that the maximum common subgraph is continuously
+tracked over the course of the algorithm as the search space of subgraphs is explored.
+The recursive exploration process of the MCG algorithm is identical to that of the
+subgraph isomorphism algorithm. The algorithm is illustrated in Fig. 17.5. The two input
+graphs are denoted by G1 and G2, respectively. As in the case of subgraph matching, the
+current matching in the recursive exploration is denoted by the set M. For each matching
+node-pair (i1, i2) ∈ M, it is assumed that i1 is drawn from G1, and i2 is drawn from G2.
+Another input parameter to the algorithm is the current best (largest) matching set of
+node-pairs Mbest. Both M and Mbest are initialized to null in the initial call made to the
+recursive algorithm by the analyst. Strictly speaking, each recursive call determines the best
+matching under the constraint that the pairs in M must be matched. This is the reason
+that this parameter is set to null at the top-level recursive call. However, in lower level
+calls, the value of M is not null.
+17.2. MATCHING AND DISTANCE COMPUTATION IN GRAPHS 565
+Algorithm MCG(Graphs: G1, G2, Current Partially Matched Pairs: M,
+Current Best Match: Mbest)
+begin
+C = Set of all label matching node pairs from (G1, G2) not in M;
+Prune C using heuristic methods; (Optional efficiency optimization)
+for each pair (i1, i2) ∈ C do
+if M∪{(i1, i2)} is a valid matching
+then Mbest =MCG(G1, G2,M∪{(i1, i2)},Mbest);
+endfor
+if (|M| > |Mbest|) then return(M) else return(Mbest);
+end
+Figure 17.5: Maximum common subgraph (MCG) algorithm
+As in the case of the subgraph isomorphism algorithm, the candidate matching nodepairs are explored recursively. The same steps of candidate extension and pruning are used
+in the MCG algorithm, as in the case of the subgraph isomorphism problem. However,
+some of the pruning steps used in the subgraph isomorphism algorithm, which are based
+on subgraph assumptions, can no longer be used. For example, in the MCG algorithm, a
+matching node-pair (i1, i2) in M no longer needs to satisfy the constraint that the degree of
+a node in one graph is greater or less than that of its matching node in the other. Because
+of the more limited pruning in the maximum common subgraph problem, it will explore a
+larger search space. This is intuitively reasonable, because the maximum common subgraph
+problem is a more general one than subgraph isomorphism. However, some optimizations
+such as expanding only to connected nodes, and sequencing optimizations such as processing
+rare labels earlier, can still be used.
+The largest common subgraph found so far is tracked in Mbest. At the end of the
+procedure, the largest matching subgraph found so far is returned by the algorithm. It is
+also relatively easy to modify this algorithm to determine all possible MCGs. The main
+difference is that all the current MCGs can be dynamically tracked instead of tracking a
+single MCG.
+17.2.3 Graph Matching Methods for Distance Computation
+Graph matching methods are closely related to distance computation between graphs. This
+is because pairs of graphs that share large subgraphs in common are likely to be more
+similar. A second way to compute distances between graphs is by using the edit distance.
+The edit distance in graphs is analogous to the notion of the edit distance in strings. Both
+these methods will be discussed in this section.
+17.2.3.1 MCG-based Distances
+When two graphs share a large subgraph in common, it is indicative of similarity. There are
+several ways of transforming the MCG size into a distance value. Some of these distance
+definitions have also been demonstrated to be metrics because they are nonnegative, symmetric, and satisfy the triangle inequality. Let the MCG of graphs G1 and G2 be denoted
+by MCS(G1, G2) with a size of |MCS(G1, G2)|. Let the sizes of the graphs G1 and G2
+566 CHAPTER 17. MINING GRAPH DATA
+be denoted by |G1| and |G2|, respectively. The various distance measures are defined as a
+function of these quantities.
+1. Unnormalized non-matching measure: The unnormalized non-matching distance measure U(G1, G2) between two graphs is defined as follows:
+U(G1, G2) = |G1| + |G2| − 2 · |MCS(G1, G2)| (17.1)
+This is equal to the number of non-matching nodes between the two graphs because
+it subtracts out the number of matching nodes |MCS(G1, G2)| from each of |G1|
+and |G2| and then adds them up. This measure is unnormalized because the value of
+the distance depends on the raw size of the underlying graphs. This is not desirable
+because it is more difficult to compare distances between pairs of graphs of varying
+size. This measure is more effective when the different graphs in the collection are of
+approximately similar size.
+2. Union-normalized distance: The distance measure lies in the range of (0, 1), and is
+also shown to be a metric. The union-normalized measure UDist(G1, G2) is defined
+as follows:
+UDist(G1, G2)=1 − |MCS(G1, G2)|
+|G1| + |G2|−|MCS(G1, G2)| (17.2)
+This measure is referred to as the union-normalized distance because the denominator
+contains the number of nodes in the union of the two graphs. A different way of
+understanding this measure is that it normalizes the number of non-matching nodes
+U(G1, G2) between the two graphs (unnormalized measure) with the number of nodes
+in the union of the two graphs.
+UDist(G1, G2) = Non-matching nodes between G1 and G2
+Union size of G1 and G2
+One advantage of this measure is that it is intuitively easier to interpret. Two perfectly
+matching graphs will have a distance of 0 from one another, and two perfectly nonmatching graphs will have a distance of 1.
+3. Max-normalized distance: This distance measure also lies in the range (0, 1). The
+max-normalized distance MDist(G1, G2) between two graphs G1 and G2 is defined as
+follows:
+MDist(G1, G2)=1 − |MCS(G1, G2)|
+max{|G1|, |G2|} (17.3)
+The main difference from the union-normalized distance is that the denominator is
+normalized by the maximum size of the two graphs. This distance measure is a metric because it satisfies the triangle inequality. The measure is also relatively easy to
+interpret. Two perfectly matching graphs will have a distance of 0 from one another,
+and two perfectly non-matching graphs will have a distance of 1.
+These distance measures can be computed effectively only for small graphs. For larger
+graphs, it becomes computationally too expensive to evaluate these measures because of
+the need to determine the maximum common subgraph between the two graphs.
+17.2. MATCHING AND DISTANCE COMPUTATION IN GRAPHS 567
+SOURCE GRAPH
+DESTINATION GRAPH
+NODE
+DELETION
+LABEL
+SUBSTITUTION
+B
+B B
+C B
+B B
+B
+B B DELETION SUBSTITUTION
+G G
+B B
+A
+B B
+A C
+NODE
+DELETION
+EDGE
+DELETION
+G1 G2
+EDGE
+INSERTION
+B
+B B
+C B
+B B
+C
+Figure 17.6: Example of two possible edits paths between graphs G1 and G2
+17.2.3.2 Graph Edit Distance
+The graph edit distance is analogous to the string edit distance, discussed in Chap. 3.
+The main difference is that the edit operations are specific to the graph domain. The edit
+distances can be applied to the nodes, the edges, or the labels. In the context of graphs,
+the admissible operations include (a) the insertion of nodes, (b) the deletion of nodes, (c)
+the label-substitution of nodes, (d) the insertion of edges, and (e) the deletion of edges.
+Note that the deletion of a node includes automatic deletion of all its incident edges. Each
+edit operation has an edit cost associated with it that is defined in an application-specific
+manner. In fact, the problem of learning edit costs is a challenging issue in its own right.
+For example, one way of learning edit costs is to use supervised distance function learning
+methods discussed in Chap. 3. The bibliographic notes contain pointers to some of these
+algorithms.
+An example of two possible edit paths between graphs G1 and G2 is illustrated in
+Fig. 17.6. Note that the two paths will have different costs, depending on the costs of the
+constituent operations. For example, if the cost of label-substitution is very high compared
+to that of edge insertions and deletions, it may be more effective to use the second (lower)
+path in Fig. 17.6. For large and complex pairs of graphs, an exponential number of possible
+edit paths may exist. The edit distance Edit(G1, G2) between two graphs is equal to the
+minimum cost of transforming graph G1 to G2 with a series of edit operations.
+Definition 17.2.5 (Graph Edit Distance) The graph edit distance Edit(G1, G2) is the
+minimum cost of the edit operations to be applied to graph G1 in order to transform it to
+graph G2.
+Depending on the costs of the different operations, the edit distance is not necessarily
+symmetric. In other words, Edit(G1, G2) can be different from Edit(G2, G1). Interestingly,
+the edit distance is closely related to the problem of determining MCGs. In fact, for some
+special choices of costs, the edit distance can be shown to be equivalent to distance measures
+based on the maximum common subgraph. This implies that the edit-distance computation
+for graphs is NP-hard as well. The edit distance can be viewed as the cost of an errortolerant graph isomorphism, where the “errors” are quantified in terms of the cost of edit
+operations. As discussed in Chap. 3, the edit-distance computation for strings and sequences
+can be solved polynomially using dynamic programming. The case of graphs is more difficult
+because it belongs to the class of NP-hard problems.
+568 CHAPTER 17. MINING GRAPH DATA
+The close relationship between edit-distance computation and the MCG problem is
+reflected in the similar structure of their corresponding algorithms. As in the case of the
+maximum common subgraph problem, a recursive tree-search procedure can be used to
+compute the edit distance. In the following, the basic procedure for computing the edit
+distance will be described. The bibliographic notes contain pointers to various enhancements
+of this procedure.
+An interesting property of the edit-distance is that it can be computed by exploring
+only those edit sequences in which any and all node insertion operations (together with
+their incident edge insertions) are performed at the end of the edit sequence. Therefore, the
+edit-distance algorithm maintains a series of edits E that are the operations to be applied
+to graph G1 to transform it into a subgraph isomorphism G
+1 of the graph G2. By trivially
+adding the unmatched nodes of G2 to G
+1 and corresponding incident edges as the final step,
+it is possible to create G2. Therefore, the initial part of sequence E, without the last step,
+does not contain any node insertions at all. In other words, the initial part of sequence E
+may contain node deletions, node label-substitutions, edge additions, and edge deletions.
+An example of such an edit sequence is as follows:
+E = Delete(i1), Insert(i2, i5), Label-Substitute(i4, A ⇒ C), Delete(i2, i6)
+This edit sequence illustrates the deletion of a node, followed by addition of the new edge
+(i2, i5). The label of node i4 is substituted from A to C. Then, the edge (i2, i6) is deleted.
+The total cost of an edit sequence E from G1 to a subgraph isomorphism G
+1 of G2 is equal
+to the sum of the edit costs of all the operations in E, together with the cost of the node
+insertions and incident edge insertions that need to be performed on G
+1 to create the final
+graph G2.
+The correctness of such an approach relies on the fact that it is always possible to arrange
+the optimal edit path sequence, so that the insertion of the nodes and their incident edges
+is performed after all other edge operations, node deletions and label-substitutions that
+transform G1 to a subgraph isomorphism of G2. The proof of this property follows from
+the fact that any optimal edit sequence can be reordered to push the insertion of nodes
+(and their incident edges) to the end, as long as an inserted node is not associated with
+any other edit operations (node or incident edge deletions, or label-substitutions). It is also
+easy to show that any edit path in which newly added nodes or edges are deleted will be
+suboptimal. Furthermore, an inserted node never needs to be label-substituted in an optimal
+path because the correct label can be set at the time of node insertion.
+The overall recursive procedure is illustrated in Fig. 17.7. The inputs to the algorithm are
+the source and target graphs G1 and G2, respectively. In addition, the current edit sequence
+E being examined for further extension, and the best (lowest cost) edit sequence Ebest found
+so far, are among the input parameters to the algorithm. These input parameters are useful
+for passing data between recursive calls. The value of E is initialized to null in the top-level
+call. While the value of E is null at the beginning of the algorithm, new edits are appended
+to it in each recursive call. Further recursive calls are executed with this extended sequence
+as the input parameter. The value of the parameter Ebest at the top-level call is set to a
+trivial sequence of edit operations in which all nodes of G1 are deleted and then all nodes
+and edges of G2 are added.
+The recursive algorithm first discovers the sequence of edits E that transforms the graph
+G1 to a subgraph isomorphism G
+1 of G2. After this phase, the trivial sequence of node/edge
+insertion edits that convert G
+1 to G2 is padded at the end of E. This step is shown in Fig. 17.7
+just before the return condition in the recursive call. Because of this final padding step, the
+17.2. MATCHING AND DISTANCE COMPUTATION IN GRAPHS 569
+Algorithm EditDistance(Graphs: G1, G2, Current Partial Edit Sequence: E,
+Best Known Edit Sequence: Ebest)
+begin
+if (G1 is subgraph isomorphism of G2) then begin
+Add insertion edits to E that convert G1 to G2;
+return(E);
+end;
+C = Set of all possible edits to G1 excluding node-insertions;
+Prune C using heuristic methods; (Optional efficiency optimization)
+for each edit operation e ∈ C do
+begin
+Apply e to G1 to create G
+1;
+Append e to E to create E
+;
+Ecurrent = EditDistance(G
+1, G2, E
+, Ebest);
+if (Cost(Ecurrent) < Cost(Ebest)) then Ebest = Ecurrent;
+endfor
+return(Ebest);
+end
+Figure 17.7: Graph edit distance algorithm
+cost of these trivial edits is always included in the cost of the edit sequence E, which is
+denoted by Cost(E).
+The overall structure of the algorithm is similar to that of the MCG algorithm of
+Fig. 17.5. In each recursive call, it is first determined if G1 is a subgraph isomorphism
+of G2. If so, the algorithm immediately returns the current set of edits E after the incorporation of trivial node or edge insertions that can transform G1 to G2. If G1 is not a
+subgraph isomorphism of G2, then the algorithm proceeds to extend the partial edit path
+E. A set of candidate edits C is determined, which when applied to G1 might reduce the
+distance to G2. In practice, these candidate edits C are determined heuristically because
+the problem of knowing the precise impact of an edit on the distance is almost as difficult
+as that of computing the edit distance. The simplest way of choosing the candidate edits
+is to consider all possible unit edits excluding node insertions. These candidate edits might
+be node deletions, label-substitutions and edge operations (both insertions and deletions).
+For a graph with n nodes, the total number of node-based candidate operations is O(n),
+and the number of edge-based candidate operations is O(n2). It is possible to heuristically
+prune many of these candidate edits if it can be immediately determined that such edits
+can never be part of an optimal edit path. In fact, some of the pruning steps are essential
+to ensure finite termination of the algorithm. Some key pruning steps are as follows:
+1. An edge insertion cannot be appended to the current partial edit sequence E, if an
+edge deletion operation between the same pair of nodes already exists in the current
+partial edit path E. Similarly, an edge which was inserted earlier cannot be deleted.
+An optimal edit path can never include such pairs of edits with zero net effect. This
+pruning step is necessary to ensure finite termination.
+2. The label of a node cannot be substituted, if the label-substitution of that node exists
+in the current partial edit path E. Repetitive label-substitutions of the same node are
+obviously suboptimal.
+570 CHAPTER 17. MINING GRAPH DATA
+3. An edge can be inserted between a pair of nodes in G1, only if at least one edge exists
+in G2 between two nodes with the same labels.
+4. A candidate edit should not be considered, if adding it to E would immediately increase
+the cost of E beyond that of Ebest.
+5. Many other sequencing optimizations are possible for prioritizing between candidate
+edits. For example, all node deletions can be performed before all label-substitutions.
+It can be shown that the optimal edit sequence can always be arranged in this way.
+Similarly, label-substitutions which change the overall distribution of labels closer
+to the target graph may be considered first. In general, it is possible to associate a
+“goodness-function” with an edit, which heuristically quantifies its likelihood of finding
+a good edit path, when included in E. Finding good edit paths early will ensure better
+pruning performance according to the aforementioned criterion (4).
+The main difference among various recursive search algorithms is to use different heuristics
+for candidate ordering and pruning. Readers are referred to the bibliographic notes at the
+end of this chapter for pointers to some of these methods. After the pruned candidate
+edits have been determined, each of these is applied to G1 to create G
+1. The procedure is
+recursively called with the pair (G
+1, G2), and an augmented edit sequence E
+. This procedure
+returns the best edit sequence Ecurrent which has a prefix of E
+. If the cost of Ecurrent is
+better than Ebest (including trivial post-processing insertion edits for full matching), then
+Ebest is updated to Ecurrent. At the end of the procedure, Ebest is returned.
+The procedure is guaranteed to terminate because repetitions in node label-substitutions
+and edge deletions are avoided in E by the pruning steps. Furthermore, the number of nodes
+in the edited graph is monotonically non-increasing as more edits are appended to E. This
+is because E does not contain node insertions except at the end of the recursion. For a
+graph with n nodes, there are at most n
+2
+
+non-repeating edge additions and deletions and
+O(n) node deletions and label-substitutions that can be performed. Therefore, the recursion
+has a finite depth of O(n2) that is also equal to the maximum length of E. This approach
+t has exponential complexity in the worst case. Edit distances are generally expensive to
+compute, unless the underlying graphs are small.
+17.3 Transformation-Based Distance Computation
+The main problem with the distance measures of the previous section is that they are computationally impractical for larger graphs. A number of heuristic and kernel-based methods
+are used to transform the graphs into a space in which distance computations are more
+efficient. Interestingly, some of these methods are also qualitatively more effective because
+of their ability to focus on the relevant portions of the graphs.
+17.3.1 Frequent Substructure-Based Transformation and Distance
+Computation
+The intuition underlying this approach is that frequent graph patterns encode key properties
+of the graph. This is true of many applications. For example, the presence of a benzene ring
+(see Fig. 17.1) in a chemical compound will typically result in specific properties. Therefore,
+the properties of a graph can often be described by the presence of specific families of
+structures in it. This intuition suggests that a meaningful way of semantically describing
+17.3. TRANSFORMATION-BASED DISTANCE COMPUTATION 571
+the graph is in terms of its family of frequent substructures. Therefore, a transformation
+approach is used in which a text-like vector-space representation is created from each graph.
+The steps are as follows:
+1. Apply frequent subgraph mining methods discussed in Sect. 17.4 to discover frequent
+subgraph patterns in the underlying graphs. This results in a “lexicon” in terms of
+which the graphs are represented. Unfortunately, the size of this lexicon is rather large,
+and many subgraphs may be redundant because of similarity to one another.
+2. Select a subset of subgraphs from the subgraphs found in the first step to reduce the
+overlap among the frequent subgraph patterns. Different algorithms may vary in this
+step by using only frequent maximal subgraphs, or selecting a subset of graphs that are
+sufficiently nonoverlapping with one another. Create a new feature fi for each frequent
+subgraph Si that is finally selected. Let d be the total number of frequent subgraphs
+(features). This is the lexicon size in terms of which a text-like representation will be
+constructed.
+3. For each graph Gi, create a vector-space representation in terms of the features
+f1 ...fd. Each graph contains the features, corresponding to the subgraphs that it
+contains. The frequency of each feature is the number of occurrences of the corresponding subgraph in the graph Gi. It is also possible to use a binary representation
+by only considering presence or absence of subgraphs, rather than frequency of presence. The tf-idf normalization may be used on the vector-space representation, as
+discussed in Chap. 13.
+After the transformation has been performed, any of the text similarity functions can be
+used to compute distances between graph objects. One advantage of using this approach
+is that it can be paired up with a conventional text index, such as the inverted index, for
+efficient retrieval. The bibliographic notes contain pointers to some of these methods.
+This broader approach can also be used for feature transformation. Therefore, any data
+mining algorithm from the text domain can be applied to graphs using this approach.
+Later, it will be discussed how this transformation approach can be used in a more direct
+way by graph mining algorithms such as clustering. The main disadvantage of this approach
+is that subgraph isomorphism is an intermediate step in frequent substructure discovery.
+Therefore, the approach has exponential complexity in the worst case. Nevertheless, many
+fast approximations are often used to provide more efficient results without a significant
+loss in accuracy.
+17.3.2 Topological Descriptors
+Topological descriptors convert structural graphs to multidimensional data by using quantitative measures of important structural characteristics as dimensions. After the conversion
+has been performed, multidimensional data mining algorithms can be used on the transformed representation. This approach enables the use of a wide variety of multidimensional
+data mining algorithms in graph-based applications. The drawback of the approach is that
+the structural information is lost. Nevertheless, topological descriptors have been shown
+to retain important properties of graphs in the chemical domain, and are therefore used
+quite frequently. In general, the utility of topological descriptors in graph mining is highly
+domain specific. It should be pointed out that topological descriptors share a number of
+conceptual similarities with the frequent subgraph approach in the previous section. The
+572 CHAPTER 17. MINING GRAPH DATA
+Figure 17.8: The Hosoya index for a clique of four nodes
+main difference is that carefully chosen topological parameters are used to define the new
+feature space instead of frequent subgraphs.
+Most topological descriptors are graph specific, whereas a few are node-specific. The
+vector of node-specific descriptors can sometimes describe the graph quite well. Node specific
+descriptors can also be used for enriching the labels of the nodes. Some common examples
+of topological descriptors are as follows:
+1. Morgan index: This is a node-specific index that is equal to the kth order degree of a
+node. In other words, the descriptor is equal to the number of nodes reachable from
+the node within a distance of k. This is one of the few descriptors that describes nodes,
+rather than the complete graph. The node-specific descriptors can also be converted
+to a graph-specific descriptor by using the frequency histogram of the Morgan index
+over different nodes.
+2. Wiener index: The Wiener index is equal to the sum of the pairwise shortest path
+distances between all pairs of nodes. It is therefore required to compute the all-pairs
+shortest path distance between different pairs of nodes.
+W(G) = 
+i,j∈G
+d(i, j) (17.4)
+The Wiener index has known relationships with the chemical properties of compounds. The motivating reason for this index was the fact that it was known to be
+closely correlated with the boiling points of alkane molecules [511]. Later, the relationship was also shown for other properties of some families of molecules, such as
+their density, surface tension, viscosity, and van der Waal surface area. Subsequently,
+the index has also been used for applications beyond the chemical domain.
+3. Hosoya index: The Hosoya index is equal to the number of valid pairwise node matchings in the graph. Note that the word “matching” refers to node–node matching within
+the same graph, rather than graph–graph matching. The matchings do not need to be
+maximal matchings, and even the empty matching is counted as one of the possibilities. The determination of the Hosoya index is #P-complete because an exponential
+number of possible matchings may exist in a graph, especially when it is dense. For
+example, as illustrated in Fig. 17.8, the Hosoya index for a complete graph (clique) of
+only four nodes is 10. The Hosoya index is also referred to as the Z-index.
+4. Estrada index: This index is particularly useful in chemical applications for measuring
+the degree of protein folding. If λ1 ...λn are the eigenvalues of the adjacency matrix
+of graph G, then the Estrada index E(G) is defined as follows:
+E(G) = n
+i=1
+eλi (17.5)
+17.3. TRANSFORMATION-BASED DISTANCE COMPUTATION 573
+5. Circuit rank: The circuit rank C(G) is equal to the minimum number of edges that
+need to be removed from a graph in order to remove all cycles. For a graph with m
+edges, n nodes, and k connected components, this number is equal to (m − n + k).
+The circuit rank is also referred to as the cyclomatic number. The cyclomatic number
+provides insights into the connectivity level of the graph.
+6. Randic index: The Randic index is equal to the pairwise sum of bond contributions.
+If νi is the degree of vertex i, then the Randic index R(G) is defined as follows:
+R(G) = 
+i,j∈G
+1/
+√νi · νj (17.6)
+The Randic index is also known as the molecular connectivity index. This index is
+often used in the context of larger organic chemical compounds in order to evaluate
+their connectivity. The Randic index can be combined with the circuit rank C(G) to
+yield the Balaban index B(G):
+B(G) = m · R(G)
+C(G)+1 (17.7)
+Here, m is the number of edges in the network.
+Most of these indices have been used quite frequently in the chemical domain because of
+their ability to capture different properties of chemical compounds.
+17.3.3 Kernel-Based Transformations and Computation
+Kernel-based methods can be used for faster similarity computation than is possible with
+methods such as MCG-based or edit-based measures. Furthermore, these similarity computation methods can be used directly with support vector machine (SVM) classifiers. This is
+one of the reasons that kernel methods are very popular in graph classification.
+Several kernels are used frequently in the context of graph mining. The following contains
+a discussion of the more common ones. The kernel similarity K(Gi, Gj ) between a pair of
+graphs Gi and Gj is the dot product of the two graphs after hypothetically transforming
+them to a new space, defined by the function Φ(·).
+K(Gi, Gj ) = Φ(Gi) · Φ(Gj ) (17.8)
+In practice, the value of Φ(·) is not defined directly. Rather, it is defined indirectly in
+terms of the kernel similarity function K(·, ·). There are various ways of defining the kernel
+similarity.
+17.3.3.1 Random Walk Kernels
+In random walk kernels, the idea is to compare the label sequences induced by random walks
+in the two graphs. Intuitively, two graphs are similar if many sequences of labels created by
+random walks between pairs of nodes are similar as well. The main computational challenge
+is that there are an exponential number of possible random walks between pairs of nodes.
+Therefore, the first step is to defined a primitive kernel function k(s1, s2) between a pair of
+node sequences s1 (from G1) and s2 (from G2). The simplest kernel is the identity kernel:
+k(s1, s2) = I(s1 = s2) (17.9)
+574 CHAPTER 17. MINING GRAPH DATA
+A
+1
++
+B B
+PRODUCT
+2 3 A B
+(1, 2I
+) (2, 1I
+)
++ PRODUCT
+GRAPH
+A B
+( 3I
+) (3 I
+)
+B
+1I
+(1, 3I
+) (3, 1I
+) 3 I A2 A I
+Figure 17.9: Example of the product graph
+Here, I(·) is the indicator function that takes the value of 1 when the two sequences are the
+same and 0 otherwise. Then, the overall kernel similarity K(G1, G2) is defined as the sum
+of the probabilities of all the primitive sequence kernels over all possible walks:
+K(G1, G2) = 
+s1,s2
+p(s1|G1) · p(s2|G2) · k(s1, s2) (17.10)
+Here, p(si|Gi) is the probability of the random walk sequence si in the graph Gi. Note that
+this kernel similarity value will be higher when the same label sequences are used by the two
+graphs. A key challenge is to compute these probabilities because there are an exponential
+number of walks of a specific length, and the length of a walk may be any value in the range
+(1, ∞).
+The random walk kernel is computed using the notion of a product graph GX between
+G1 and G2. The product graphs are constructed by defining a vertex [u1, u2] between each
+pair of label matching vertices u1 and u2 in the graphs G1 and G2, respectively. An edge is
+added between a pair of vertices [u1, u2] and [v1, v2] in the product graph GX if and only an
+edge exists between the corresponding nodes in both the individual graphs G1 and G2. In
+other words, the edge (u1, v1) must exist in G1 and the edge (u2, v2) must exist in G2. An
+example of a product graph is illustrated in Fig. 17.9. Note that each walk in the product
+graph corresponds to a pair of label-matching sequence of vertices in the two graphs G1 and
+G2. Then, if A is the binary adjacency matrix of the product graph, then the entries of Ak
+provide the number of walks of length k between the different pairs of vertices. Therefore,
+the total weighted number of walks may be computed as follows:
+K(G1, G2) = 
+i,j
+∞
+k=1
+λk[Ak]ij = eT (I − λA)
+−1e (17.11)
+Here, e is an |GX|-dimensional column vector of 1s, and λ ∈ (0, 1) is a discount factor. The
+discount factor λ should always be smaller than the inverse of the largest eigenvalue of A to
+ensure convergence of the infinite summation. Another variant of the random walk kernel
+is as follows:
+K(G1, G2) = 
+i,j
+∞
+k=1
+λk
+k!
+[Ak]ij = eT exp(λA)e (17.12)
+When the graphs in a collection are widely varying in size, the kernel functions of Eqs. 17.11
+and 17.12 should be further normalized by dividing with |G1|·|G2|. Alternatively, in some
+17.4. FREQUENT SUBSTRUCTURE MINING IN GRAPHS 575
+probabilistic versions of the random walk kernel, the vectors eT and e are replaced with
+starting and stopping probabilities of the random walk over various nodes in the product
+graph. This computation is quite expensive, and may require as much as O(n6) time.
+17.3.3.2 Shortest-Path Kernels
+In the shortest-path kernel, a primitive kernel ks(i1, j1, i2, i2) is defined on node-pairs
+[i1, j1] ∈ G1 and [i2, j2] ∈ G2. There are several ways of defining the kernel function
+ks(i1, i2, j1, j2). A simple way of defining the kernel value is to set it to 1 when the distance d(i1, i2) = d(j1, j2), and 0, otherwise.
+Then, the overall kernel similarity is equal to the sum of all primitive kernels over
+different quadruplets of nodes:
+K(G1, G2) = 
+i1,i2,j1,j2
+ks(i1, i2, j1, j2) (17.13)
+The shortest-path kernel may be computed by applying the all-pairs shortest-path algorithm
+on each of the graphs. It can be shown that the complexity of the kernel computation is
+O(n4). Although this is still quite expensive, it may be practical for small graphs, such as
+chemical compounds.
+17.4 Frequent Substructure Mining in Graphs
+Frequent subgraph mining is a fundamental building block for graph mining algorithms.
+Many of the clustering, classification, and similarity search techniques use frequent substructure mining as an intermediate step. This is because frequent substructures encode
+important properties of graphs in many application domains. For example, consider the
+series of phenolic acids illustrated in Fig. 17.10. These represent a family of organic compounds with similar chemical properties. Many complex variations of this family act as
+signaling molecules and agents of defense in plants. The properties of phenolic acids are a
+direct result of the presence of two frequent substructures, corresponding to the carboxyl
+group and phenol group, respectively. These groups are illustrated in Fig. 17.10 as well. The
+relevance of such substructural properties is not restricted to the chemical domain. This is
+the reason that frequent substructures are often used in the intermediate stages of many
+graph mining applications such as clustering and classification.
+The definition of a frequent subgraph is identical to the case of association pattern
+mining, except that a subgraph relationship is used to count the support rather than a
+subset relationship. Many well-known frequent substructure mining algorithms are based
+on the enumeration tree principle discussed in Chap. 4. The simplest of these methods is
+based on the Apriori algorithm. This algorithm is discussed in detail in Fig. 4.2 of Chap. 4.
+The Apriori algorithm uses joins to create candidate patterns of size (k + 1) from frequent
+patterns of size k. However, because of the greater complexity of graph-structured data, the
+join between a pair of graphs may not result in a unique solution. For example, candidate
+frequent patterns can be generated by either node extensions or edge extensions. Thus, the
+main difference between these two variations is in terms of how frequent substructures of size
+k are defined and joined together to create candidate structures of size (k + 1). The “size”
+of a subgraph may refer to either the number of nodes in it, or the number of edges in it
+depending on whether node extensions or edge extensions are used. Therefore, the following
+will describe the Apriori-based algorithm in a general way without specifically discussing
+576 CHAPTER 17. MINING GRAPH DATA
+OH O H OH
+SALICYLIC ACID 3 HYDROXYBENZOIC ACID 4 HYDROXYBENZOIC ACID
+DATABASE OF PHENOLIC ACIDS
+OH
+CARBOXYL GROUP PHENOL GROUP
+FREQUENT SUBSTRUCTURES OF PHENOLIC ACIDS
+Figure 17.10: Examples of frequent substructures in a database of phenolic acids
+either node extensions or edge extensions. Subsequently, the precise changes required to
+enable these two specific variations will be discussed.
+The overall algorithm for frequent subgraph mining is illustrated in Fig. 17.11. The
+input to the algorithm is the graph database G = {G1 ...Gn} and a minimum support value
+minsup. The basic algorithm structure is similar to that of the Apriori algorithm, discussed
+in Fig. 4.2 of Chap. 4. A levelwise algorithm is used, in which candidate subgraphs Ck+1 of
+size (k + 1) are generated by using joins on graph pairs from the set of frequent subgraphs
+Fk of size k. As discussed earlier, the size of a subgraph may refer to either its nodes or
+edges, depending on the specific algorithm used. The two graphs need to be matching in
+a subgraph of size (k − 1) for a join to be successfully performed. The resulting candidate
+subgraph will be of size (k + 1). Therefore, one of the important steps of join processing, is
+determining whether two graphs share a subgraph of size (k −1) in common. The matching
+algorithms discussed in Sect. 17.2 can be used for this purpose. In some applications, where
+node labels are distinct and isomorphism is not an issue, this step can be performed very
+efficiently. On the other hand, for large graphs that have many repeating node labels, this
+step is slow because of isomorphism.
+After the pairs of matching graphs have been identified, joins are performed on them in
+order to generate the candidates Ck+1 of size (k + 1). The different node-based and edgebased variations in the methods for performing joins will be described later. Furthermore,
+the Apriori pruning trick is used. Candidates in Ck+1 that are such that any of their ksubgraphs do not exist in Fk are pruned. For each remaining candidate subgraph, the
+support is computed with respect to the graph database G. The subgraph isomorphism
+algorithm discussed in Sect. 17.2 needs to be used for computing the support. All candidates
+in Ck+1 that meet the minimum support requirement are retained in Fk+1. The procedure
+is repeated iteratively until an empty set Fk+1 is generated. At this point, the algorithm
+terminates, and the set of frequent subgraphs in ∪k
+i=1Fi is reported. Next, the two different
+ways of defining the size k of a graph, corresponding to node- and edge-based joins, will be
+described.
+17.4. FREQUENT SUBSTRUCTURE MINING IN GRAPHS 577
+Algorithm GraphApriori(Graph Database: G,
+Minimum Support: minsup);
+begin
+F1 = { All Frequent singleton graphs };
+k = 1;
+while Fk is not empty do begin
+Generate Ck+1 by joining pairs of graphs in Fk that
+share a subgraph of size (k − 1) in common;
+Prune subgraphs from Ck+1 that violate downward closure;
+Determine Fk+1 by support counting on (Ck+1, G) and retaining
+subgraphs from Ck+1 with support at least minsup;
+k = k + 1;
+end;
+return(∪k
+i=1Fi);
+end
+Figure 17.11: The basic frequent subgraph discovery algorithm is related to the Apriori
+algorithm. The reader is encouraged to compare this pseudocode with the Apriori algorithm
+described in Fig. 4.2 of Chap. 4.
+A
+A C
+A
+A C
+B
++ JOIN
+B C
+POSSIBILITY 1
+A
+A
++
+A
+A C
+B C B C
+POSSIBILITY 2
+Figure 17.12: Candidates generated using node-based join of two graphs
+578 CHAPTER 17. MINING GRAPH DATA
+17.4.1 Node-Based Join Growth
+In the case of node-based joins, the size of a frequent subgraph in Fk refers to the number
+of nodes k in it. The singleton graphs in F1 contain a single node. These are node labels
+that are present in at least minsup graphs in the graph database G. For two graphs from
+Fk to be joined, a matching subgraph with (k −1) nodes must exist between the two graphs.
+This matching subgraph is also referred to as the core. When two k-subgraphs with (k − 1)
+common nodes are joined to create a candidate with (k + 1) nodes, an ambiguity exists,
+as to whether or not an edge exists between the two non-matching nodes. Therefore, two
+possible graphs are generated, depending on whether or not an edge exists between the nodes
+that are not common between the two. An example of the two possibilities for generating
+candidate subgraphs is illustrated in Fig. 17.12. While this chapter does not assume that
+edge labels are associated with graphs, the number of possible joins will be even larger
+when labels are associated with edges. This is because each possible edge label must be
+associated with the newly created edge. This will result in a larger number of candidates.
+Furthermore, in cases where there are isomorphic matchings of size (k − 1) between the
+two frequent subgraphs, candidates may need to be generated for each such mapping (see
+Exercise 8). Thus, all possible (k − 1) common subgraphs need to be discovered between a
+pair of graphs, in order to generate the candidates. Thus, the explosion in the number of
+candidate patterns is usually more significant in the case of frequent subgraph discovery,
+than in the case of frequent pattern discovery.
+17.4.2 Edge-Based Join Growth
+In the case of edge-based joins, the size of a frequent subgraph in Fk refers to the number
+of edges k in it. The singleton graphs in F1 contain a single edge. These correspond to edges
+between specific node labels that are present in at least minsup graphs in the database G.
+In order for two graphs from Fk to be joined, a matching subgraph with (k − 1) edges needs
+to be present in the two graphs. The resulting candidate will contain exactly (k + 1) edges.
+Interestingly, the number of nodes in the candidate may not necessarily be greater than
+that in the individual subgraphs that are joined. In Fig. 17.13, the two possible candidates
+that are constructed using edge-based joins are illustrated. Note that one of the generated
+candidates has the same number of nodes as the original pair of graphs. As in the case of
+node-based joins, one needs to account for isomorphism in the process of candidate generation. Edge-based join growth tends to generate fewer candidates in total and is therefore
+generally more efficient. The bibliographic notes contain pointers to more details about
+these methods.
+17.4.3 Frequent Pattern Mining to Graph Pattern Mining
+The similarity between the aforementioned approach and Apriori is quite striking. The joinbased growth strategy can also be generalized to an enumeration tree-like strategy. However,
+the analogous candidate tree can be generated in two different ways, corresponding to nodeand edge-based extensions, respectively. Furthermore, tree growth is more complex because
+of isomorphism. GraphApriori uses a breadth-first candidate-tree generation approach as
+in all Apriori-like methods. It is also possible to use other strategies, such as depth-first
+methods, to grow the tree of candidates. As discussed in Chap. 4, almost all frequent pattern
+mining algorithms, including1 Apriori and FP-growth, should be considered enumeration1See the discussion in Sect. 4.4.4.5 of Chap. 4.
+17.5. GRAPH CLUSTERING 579
+A
+A C
+A
+A C
+B
++ JOIN
+B C
+POSSIBILITY 1
+A
+A
++
+A
+A
+C
+B C B
+POSSIBILITY 2
+Figure 17.13: Candidates generated using edge-based join of two graphs
+tree methods. Therefore, the broader principles of these algorithms can also be generalized
+to the growth of the candidate tree in graphs. The bibliographic notes contain pointers to
+these methods.
+17.5 Graph Clustering
+The graph clustering problem partitions a database of n graphs, denoted by G1 ...Gn, into
+groups. Graph clustering methods are either distance-based or frequent substructure-based.
+Distance-based methods are more effective for smaller graphs, in which distances can be
+computed robustly and efficiently. Frequent substructure-based methods are appropriate
+for larger graphs where distance computations become qualitatively and computationally
+impractical.
+17.5.1 Distance-Based Methods
+The design of distance functions is particularly important for virtually every complex data
+type because of their applicability to clustering methods, such as k-medoids and spectral
+methods, that are dependent only on the design of the distance function. Virtually all the
+complex data types discussed in Chaps. 13–16 use this general methodology for clustering.
+This is the reason that distance function design is usually the most fundamental problem
+that needs to be addressed in every data domain. Sections 17.2 and 17.3 of this chapter
+have discussed methods for distance computation in graphs. After a distance function has
+been designed, the following two methods can be used:
+1. The k-medoids method introduced in Sect. 6.3.4 in Chap. 6 uses a representativebased approach, in which the distances of data objects to their closest representatives
+are used to perform the clustering. A set of k representatives is used, and data objects
+are assigned to their closest representatives by using an appropriately designed distance function. The set of k representatives is progressively optimized by using a hillclimbing approach, in which the representatives are iteratively swapped with other
+data objects in order to improve the clustering objective function value. The reader
+is referred to Chap. 6 for details of the k-medoids algorithm. A key property of this
+algorithm is that the computations are not dependent on the nature of the data type
+after the distance function has been defined.
+580 CHAPTER 17. MINING GRAPH DATA
+2. A second commonly-used methodology is that of spectral methods. In this case, the
+individual graph objects are used to construct a single large neighborhood graph. The
+latter graph is a higher level similarity graph, in which each node corresponds to one
+of the (smaller) graph objects from the original database and the weight of the edge is
+equal to the similarity between the two objects. As discussed in Sect. 6.7 of Chap. 6,
+distances can be converted to similarity values with the use of a kernel transformation.
+Each node is connected to its k-nearest neighbors with an undirected edge. Thus, the
+problem of clustering graph objects is transformed to the problem of clustering nodes
+in a single large graph. This problem is discussed briefly in Sect. 6.7 of Chap. 6, and in
+greater detail in Sect. 19.3 of Chap. 19. Any of the network clustering or community
+detection algorithms can be used to cluster the nodes, although spectral methods are
+used quite commonly. After the node clusters have been determined, they are mapped
+back to clusters of graph objects.
+The aforementioned methods do not work very well when the individual graph objects are
+large because of two reasons. It is generally computationally expensive to compute distances
+between large graph objects. Graph distance functions, such as matching-based methods,
+have a complexity that increases exponentially with graph object size. The effectiveness of
+such methods also drops sharply with increasing graph size. This is because the graphs may
+be similar only in some portions that repeat frequently. The rare portions of the graphs
+may be unique to the specific graph at hand. In fact, many small substructures may be
+repeated across the two graphs. Therefore, a matching-based distance function may not be
+able to properly compare the key features of the different graphs. One possibility is to use a
+substructure-based distance function, as discussed in Sect. 17.3.1. A more direct approach
+is to use frequent substructure-based methods.
+17.5.2 Frequent Substructure-Based Methods
+These methods extract frequent subgraphs from the data and use their membership in input
+graphs to determine clusters. The basic premise is that the frequent subgraphs are indicative
+of cluster membership because of their propensity to define application-specific properties.
+For example, in an organic chemistry application, a benzene ring (illustrated as a subgraph
+of Fig. 17.1a) is a frequently occurring substructure that is indicative of specific chemical
+properties of the compound. In an XML application, a frequent substructure corresponds
+to important structural relationships between entities. Therefore, the membership of such
+substructures in graphs is highly indicative of similarity and cluster membership. Interestingly, frequent pattern mining algorithms are also used in multidimensional clustering. An
+example is the CLIQUE algorithm (cf. Sect. 7.4.1 of Chap. 7).
+In the following sections, two different methods for graph clustering will be described.
+The first is a generic transformational approach that can be used to apply text clustering
+methods to the graph domain. The second is a more direct iterative approach of relating
+the graph clusters to their frequent substructures.
+17.5.2.1 Generic Transformational Approach
+This approach transforms the graph database to a text-like domain, so that the wide variety
+of text clustering algorithms may be leveraged. The broad approach may be described as
+follows:
+1. Apply frequent subgraph mining methods discussed in Sect. 17.4 in order to discover
+frequent subgraph patterns in the underlying graphs. Select a subset of subgraphs to
+17.5. GRAPH CLUSTERING 581
+reduce overlap among the different subgraphs. Different algorithms may vary on this
+step by using only frequent maximal subgraphs, or selecting a subset of graphs that are
+sufficiently nonoverlapping with one another. Create a new feature fi for each frequent
+subgraph Si that is discovered. Let d be the total number of frequent subgraphs
+(features). This is the “lexicon” size in terms of which a text-like representation will
+be constructed.
+2. For each graph Gi, create a vector-space representation in terms of the features
+f1 ...fd. Each graph contains the features corresponding to the subgraphs that it
+contains. The frequency of each feature is the number of occurrences of the corresponding subgraph in the graph Gi. It is also possible to use a binary representation
+by only considering the presence or absence of subgraphs rather than frequency of
+presence. Use tf-idf normalization on the vector-space representation, as discussed in
+Chap. 13.
+3. Use any of the text-clustering algorithms discussed in Sect. 13.3 in Chap. 13, in order
+to discover clusters of newly created text objects. Map the text clusters to graph
+object clusters.
+This broader approach of using text-based methods is utilized frequently with many contextual data types. For example, an almost exactly analogous approach is discussed for
+sequence clustering in Sect. 15.3.3 of Chap. 15. This is because a modified version of frequent pattern mining methods can be defined for most data types. It should be pointed
+out that, although the substructure-based transformation is discussed here, many of the
+kernel-based transformations and topological descriptors, discussed earlier in this chapter,
+may be used as well. For example, the kernel k-means algorithm can be used in conjunction
+with the graph kernels discussed in this chapter.
+17.5.2.2 XProj: Direct Clustering with Frequent Subgraph Discovery
+The XProj algorithm derives its name from the fact that it was originally proposed for
+XML graphs, and a substructure can be viewed as a PROJection of the graph. Nevertheless, the approach is not specific to XML structures, and it can be applied to any other
+graph domain, such as chemical compounds. The XProj algorithm uses the substructure
+discovery process as an important subroutine, and different applications may use different
+substructure discovery methods, depending on the data domain. Therefore, the following
+will provide a generic description of the XProj algorithm for graph clustering, although the
+substructure discovery process may be implemented in an application-specific way. Because
+the algorithm uses the frequent substructures for the clustering process, an additional input
+to the algorithm is the minimum support minsup. Another input to the algorithm is the
+size l of the frequent substructures mined. The size of the frequent substructures is fixed
+in order to ensure robust computation of similarity. These are user-defined parameters that
+can be tuned to obtain the most effective results.
+The algorithm can be viewed as a representative approach similar to k-medoids, except
+that each representative is a set of frequent substructures. These represent the localized
+substructures of each group. The use of frequent-substructures as the representatives, instead
+of the original graphs, is crucial. This is because distances cannot be computed effectively
+between pairs of graphs, when the sizes of the graphs are larger. On the other hand, the
+membership of frequent substructures provides a more intuitive way of computing similarity.
+It should be pointed out that, unlike transformational methods, the frequent substructures
+582 CHAPTER 17. MINING GRAPH DATA
+Algorithm XProj(Graph Database: G, Minimum Support: minsup
+Structural Size: l, Number of Clusters: k )
+begin
+Initialize clusters C1 ... Ck randomly;
+Compute frequent substructure sets F1 ... Fk from C1 ... Ck;
+repeat
+Assign each graph Gj ∈ G to the cluster Ci for which the former’s
+similarity to Fi is the largest ∀i ∈ {1 ...k};
+Compute frequent substructure set Fi from Ci for each i ∈ {1 ...k};
+until convergence;
+end
+Figure 17.14: The frequent subgraph-based clustering algorithm (high level description)
+are local to each cluster, and are therefore better optimized. This is the main advantage of
+this approach over a generic transformational approach.
+There are a total of k such frequent substructure sets F1 ... Fk, and the graph database is
+partitioned into k groups around these localized representatives. The algorithm is initialized
+with a random partition of the database G into k clusters. These k clusters are denoted by
+C1 ... Ck. The frequent substructures Fi of each of these clusters Ci can be determined
+using any frequent substructure discovery algorithm. Subsequently, each graph in Gj ∈
+G is assigned to one of the representative sets Fi based on the similarity of Gj to each
+representative set Fi. The details of the similarity computation will be discussed later. This
+process is repeated iteratively, so that the representative set Fi is generated from cluster
+Ci, and the cluster Ci is generated from the frequent set Fi. The process is repeated, until
+the change in the average similarity of each graph Gj to its assigned representative set Fi
+is no larger than a user-defined threshold. At this point, the algorithm is assumed to have
+converged, and it terminates. The overall algorithm is illustrated in Fig. 17.14.
+It remains to be described how the similarity between a graph Gj and a representative
+set Fi is computed. The similarity between Gj and Fi is computed with the use of a coverage
+criterion. The similarity between Gj and Fi is equal to the fraction of frequent substructures
+in Fi that are a subgraph of Gj .
+A major computational challenge is that the determination of frequent substructures
+in Fi may be too expensive. Furthermore, there may be a large number of frequent substructures in Fi that are highly overlapping with one another. To address these issues, the
+XProj algorithm proposes a number of optimizations. The first optimization is that the
+frequent substructures do not need to be determined exactly. An approximate algorithm for
+frequent substructure mining is designed. The second optimization is that only a subset of
+nonoverlapping substructures of length l are included in the sets Fi. The details of these
+optimizations may be found in pointers discussed in the bibliographic notes.
+17.6 Graph Classification
+It is assumed that a set of n graphs G1 ...Gn is available, but only a subset of these graphs
+is labeled. Among these, the first nt ≤ n graphs are labeled, and the remaining (n − nt)
+graphs are unlabeled. The labels are drawn from {1 ...k}. It is desired to use the labels on
+the training graphs to infer the labels of unlabeled graphs.
+17.6. GRAPH CLASSIFICATION 583
+17.6.1 Distance-Based Methods
+Distance-based methods are most appropriate when the sizes of the underlying graphs
+are small, and the distances can be computed efficiently. Nearest neighbor methods and
+collective classification methods are two of the distance-based methods commonly used for
+classification. The latter method is a transductive semi-supervised method, in which the
+training and test instances need to be available at the same time for the classification
+process. These methods are described in detail below:
+1. Nearest neighbor methods: For each test instance, the k-nearest neighbors are determined. The dominant label from these nearest neighbors is reported as the relevant
+label. The nearest neighbor method for multidimensional data is described in detail
+in Sect. 10.8 of Chap. 10. The only modification to the method is the use of a different
+distance function, suited for the graph data type.
+2. Graph-based methods: This is a semi-supervised method, discussed in Sect. 11.6.3 of
+Chap. 11. In graph-based methods, a higher level neighborhood graph is constructed
+from the training and test graph objects. It is important not to confuse the notion of a
+neighborhood graph with that of the original graph objects. The original graph objects
+correspond to nodes in the neighborhood graph. Each node is connected to its k nearest
+neighbor objects based on the distance values. This results in a graph containing both
+labeled and unlabeled nodes. This is the collective classification problem, for which
+various algorithms are described in Sect. 19.4 of Chap. 19. Collective classification
+algorithms can be used to derive labels of the nodes in the neighborhood graphs.
+These derived labels can then be mapped back to the unlabeled graph objects.
+Distance-based methods are generally effective when the underlying graph objects are small.
+For larger graph objects, the computation of distances becomes too expensive. Furthermore,
+distance computations no longer remain effective from an accuracy perspective, when multiple common substructures are present in the two graphs.
+17.6.2 Frequent Substructure-Based Methods
+Pattern-based methods extract frequent subgraphs from the data, and use their membership
+in different graphs, in order to build classification models. As in the case of clustering,
+the main assumption is that the frequently occurring portions of graphs can related to
+application-specific properties of the graphs. For example, the phenolic acids of Fig. 17.10
+are characterized by the two frequent substructures corresponding to the carboxyl group
+and the phenol group. These substructures therefore characterize important properties of
+a family or a class of compounds. This is generally true across many different applications
+beyond the chemical domain. As discussed in Sect. 10.4 of Chap. 10, frequent patterns are
+often used for rule-based classification, even in the “flat” multidimensional domain. As in
+the case of clustering, either a generic transformational approach or a more direct rule-based
+method can be used.
+17.6.2.1 Generic Transformational Approach
+This approach is generally similar to the transformational approach discussed in the previous
+section on clustering. However, there are a few differences that account for the impact of
+supervision. The broad approach may be described as follows:
+584 CHAPTER 17. MINING GRAPH DATA
+1. Apply frequent subgraph mining methods discussed in Sect. 17.4 to discover frequent
+subgraph patterns in the underlying graphs. Select a subset of subgraphs to reduce
+overlap among the different subgraphs. For example, feature selection algorithms that
+minimize redundancy and maximize the relevance of the features may be used. Such
+feature selection algorithms are discussed in Sect. 10.2 of Chap. 10. Let d be the total
+number of frequent subgraphs (features). This is the “lexicon” size in terms of which
+a text-like representation will be constructed.
+2. For each graph Gi, create a vector-space representation in terms of the d features
+found. Each graph contains the features corresponding to the subgraphs that it contains. The frequency of each feature is equal to the number of occurrences of the
+corresponding subgraph in graph Gi. It is also possible to use a binary representation by only considering presence or absence of subgraphs, rather than frequency of
+presence. Use tf-idf normalization on the vector-space representation, as discussed in
+Chap. 13.
+3. Select any text classification algorithm discussed in Sect. 13.5 of Chap. 13 to build a
+classification model. Use the model to classify test instances.
+This approach provides a flexible framework. After the transformation has been performed, a
+wide variety of algorithms may be used. It also allows the use of different types of supervised
+feature selection methods to ensure that the most discriminative structures are used for
+classification.
+17.6.2.2 XRules: A Rule-Based Approach
+The XRules method was proposed in the context of XML data, but it can be used in
+the context of any graph database. This is a rule-based approach that relates frequent
+substructures to the different classes. The training phase contains three steps:
+1. In the first phase, frequent substructures with sufficient support and confidence are
+determined. Each rule is of the form:
+Fg ⇒ c
+The notation Fg denotes a frequent substructure, and c is a class label. Many other
+measures can be used to quantify the strength of the rule instead of the confidence.
+Examples include the likelihood ratio, or the cost-weighted confidence in the rare
+class scenario. The likelihood ratio of Fg ⇒ c is the ratio of the fractional support
+of Fg in the examples containing c, to the fractional support of Fg in examples not
+containing c. A likelihood ratio greater than one indicates that the rule is highly likely
+to belong to a particular class. The generic term for these different ways of measuring
+the class-specific relevance is the rule strength.
+2. In the second phase, the rules are ordered and pruned. The rules are ordered by
+decreasing strength. Statistical thresholds on the rule strength may be used for pruning
+rules with low strength. This yields a compact set R of ordered rules that are used
+for classification.
+3. In the final phase, a default class is set that can be used to classify test instances not
+covered by any rule in R. The default class is set to the dominant class of the set
+of training instances not covered by rule set R. A graph is covered by a rule if the
+17.7. SUMMARY 585
+left-hand side of the rule is a substructure of the graph. In the event that all training
+instances are covered by rule set R, then the default class is set to the dominant
+class in the entire training data. In cases where classes are associated with costs, the
+cost-sensitive weight is used in determining the majority class.
+After the training model has been constructed, it can be used for classification as follows.
+For a given test graph G, the rules that are fired by G are determined. If no rules are
+fired, then the default class is reported. Let Rc(G) be the set of rules fired by G. Note
+that these different rules may not yield the same prediction for G. Therefore, the conflicting
+predictions of different rules need to be combined meaningfully. The different criteria that
+are used to combine the predictions are as follows:
+1. Average strength: The average strength of the rules predicting each class are determined. The class with the average highest strength is reported.
+2. Best rule: The top rule is determined on the basis of the priority order discussed
+earlier. The class label of this rule is reported.
+3. Top-k average strength: This can be considered a combination of the previous two
+methods. The average strength of the top-k rules of each class is used to determine
+the predicted label.
+The XRules procedure uses an efficient procedure for frequent substructure discovery, and
+many other variations for rule quantification. Refer to the bibliographic notes.
+17.6.3 Kernel SVMs
+Kernel SVMs can construct classifiers with the use of kernel similarity between training and
+test instances. As discussed in Sect. 10.6.4 of Chap. 10, kernel SVMs do not actually need the
+feature representation of the data, as long as the kernel-based similarity K(Gi, Gj ) between
+any pair of graph objects is available. Therefore, the approach is agnostic to the specific
+data type that is used. The different kinds of graph kernels are discussed in Sect. 17.3.3
+of this chapter. Any of these kernels can be used in conjunction with the SVM approach.
+Refer to Sect. 10.6.4 of Chap. 10 for details on how kernels may be used in conjunction with
+SVM classifiers.

@@ -1,0 +1,33 @@
+Classification 
+Naive bayes classifier
+Generalized linear model
+Sampling Methods
+Synthetic Oversampling
+Scalable Classification
+Decision Tree
+RainForest
+BOAT
+Scalable Support Vector Machine
+Regression Model
+Linear Regression
+Fisher’s Linear Discriminant
+Principal Component Regression
+Logistic regression
+Nonlinear regression
+Polynomial Regression
+Decision Tree
+Regression Tree
+Self-Training 
+Co-training
+Active Learning
+Heterogeneity-Based Model
+Performance-Based Model
+Error Reduction
+Variance Reduction
+Representativeness-Based Model
+Ensemble Methods
+Bias-Variance Trade-off
+Bagging
+Random Forest
+Boosting
+Stacking

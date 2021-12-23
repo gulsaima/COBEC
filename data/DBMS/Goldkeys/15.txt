@@ -1,0 +1,20 @@
+Database design
+Redundancy
+Update anomaly
+Insertion anomaly
+Decomposition
+Functional dependency
+Relational schema
+Armstrong's Axioms
+First normal form
+BCNF
+Third normal form
+Fourth normal form
+Partial dependency
+Transitive dependency
+Relation schema
+Lossless-Join decomposition
+Join dependency
+Dependency-Preserving Decomposition
+Multivalued_dependencies
+3NF Synthesis

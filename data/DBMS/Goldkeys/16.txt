@@ -1,0 +1,16 @@
+Conceptual schema
+Physical schema
+Database tuning
+Index selection
+Co-clustering
+Tuning indexes
+Denormalize
+Horizontal partitioning
+Vertical decomposition
+Views
+Transaction processing
+Query benchmarks
+Lock contention
+DBMS benchmark
+
+

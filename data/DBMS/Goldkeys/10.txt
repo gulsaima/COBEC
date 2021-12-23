@@ -1,0 +1,12 @@
+Hash
+Hash function
+Static hashing
+Dynamic hashing
+Extendible hashing
+Depth
+Data entry
+Local depth
+Global depth
+Collision
+Linear hashing
+Bucket

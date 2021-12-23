@@ -1,0 +1,38 @@
+Classification
+Feature Selection
+Filter Models
+Gini Index
+Entropy
+Holdout method
+Logistic regression
+Fisher Score
+Linear discriminant analysis
+Wrapper Models
+Embedded Models
+Decision Trees
+Split Criteria
+Pruning
+Rule-Based Classifier
+Sequential Covering Algorithm
+Learn-One-Rule
+Associative Classifier
+Probabilistic Classifier
+Naive Bayes Classifier
+Ranking Model
+Naive Assumption
+Support Vector Machine
+Nonseparable Data
+Nonlinear Support Vector Machines
+Kernel method
+Neural Network
+Single-Layer Neural Network
+Perceptron
+Roc_curve
+Instance-Based Learning
+Unsupervised Mahalanobis
+Linear Discriminant Analysis
+Classifier Evaluation
+Holdout
+Cross-Validation
+Bootstrap
+Quantification Issues

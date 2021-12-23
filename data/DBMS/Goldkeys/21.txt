@@ -1,0 +1,20 @@
+parallel database system
+distributed database system
+Pipelined parallelism
+data-partitioned parallel evaluation
+Data Partitioning
+round-robin partitioning
+hash partitioning
+range partitioning
+Scanning
+Loading
+Client-Server Systems
+Collaborating Server Systems
+Middleware Systems
+Fragmentation
+Horizontal fragmentation
+Vertical fragmentation
+Replication
+Bloomjoin
+Data warehouse
+Commit

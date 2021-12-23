@@ -1,0 +1,20 @@
+Transaction
+Isolation
+Durability
+Atomicity
+Commit
+Abort
+Schedule
+Complete schedule
+Serial schedule
+Serializability
+serializable schedule
+Conflict
+WR conflicts
+RW Conflicts
+WW conflicts
+Cascading
+Locking protocol
+Strict 2PL
+recovery manager
+transaction manager

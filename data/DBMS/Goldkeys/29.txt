@@ -1,0 +1,396 @@
+Data
+Database
+Database management system
+Database design
+File system
+Data independence
+Data integrity
+Data model
+Relational model
+Semantic data model
+Relation
+Schema
+Integrity constraints
+Conceptual schema
+External schema
+Query
+Query language
+Relational calculus
+Relational algebra
+Data manipulation language
+Transaction
+Locking protocol
+Database administrator
+Entity
+Entity set
+Attribute
+Entity relationship model
+Conceptual design
+Requirement analysis
+Class hierarchy
+key constraint
+Primary key
+Weak entity
+Aggregation
+Ternary relationship
+Constraint
+Relational model
+Relation
+Query language
+SQL
+Relation schema
+Domain constraints
+Arity
+Data definition language
+Integrity constraint
+Key constraint
+Primary key
+Foreign Key
+ER diagram
+View
+Data independence
+Relational calculus
+Relational algebra
+Calculus
+Algebra
+Set operations
+Join
+Tuple relational calculus
+Tuple
+Atomic formula
+Formula
+Variable
+Free variable
+SQL
+Query
+Programming language
+Trigger
+Data definition language
+Data manipulation language
+Transaction management
+QBE
+Query-by-example
+Query
+Negation
+Relation
+Aggregate
+Aggregation
+Grouping
+Condition box
+Disk
+Storage
+Page
+Block
+Memory hierarchy
+Primary storage
+Secondary storage
+Index
+File system
+Direct access
+RAID
+Data striping
+Redundancy
+Buffer manager
+Buffer pool
+Linked list
+Record
+File
+File organization
+Heap
+Hashed file
+Scan
+Bucket
+Hash function
+Index
+Cost
+Data entry
+Spars index
+Dense index
+Primary index
+Secondary index
+Composite search key
+Data structure
+ISAM
+Tree
+B+ tree
+Node
+Leaf node
+Root node
+Pointer
+Doubly linked list
+Pointer
+Bulk loading
+Hash
+Hash function
+Static hashing
+Dynamic hashing
+Extendible hashing
+Depth
+Data entry
+Local depth
+Global depth
+Collision
+Linear hashing
+Bucket
+Sorting algorithm
+Algorithm
+Merge sort
+External merge
+Buffer
+Buffer block
+Buffer pool
+Double buffering
+Index
+Clustered index
+Unclustered index
+Relational operators
+Query
+SQL
+Access path
+Selection
+Conjunctive normal form
+Disjunction
+Partitioning
+Join
+Buffer
+Hash join
+Index-only scan
+Sort-merge join
+SID
+Hybrid hash join
+Set operations
+Aggregate operation
+Query optimization
+Query evaluation plan
+plan
+Relational algebra
+Pipelining
+Access methods
+Join
+Selection
+Index
+Cost
+Query optimization
+Query block
+Having
+Order by
+SQL
+Cost
+Plan
+Histograms
+Relational algebra
+Projections
+Left-deep plans
+Rule-based optimization
+Database design
+Redundancy
+Update anomaly
+Insertion anomaly
+Decomposition
+Functional dependency
+Relational schema
+Armstrong's Axioms
+First normal form
+BCNF
+Third normal form
+Fourth normal form
+Partial dependency
+Transitive dependency
+Relation schema
+Lossless-Join decomposition
+Join dependency
+Dependency-Preserving Decomposition
+Multivalued_dependencies
+3NF Synthesis
+Conceptual schema
+Physical schema
+Database tuning
+Index selection
+Co-clustering
+Tuning indexes
+Denormalize
+Horizontal partitioning
+Vertical decomposition
+Views
+Transaction processing
+Query benchmarks
+Lock contention
+DBMS benchmark
+Access control
+Database security
+Discretionary access control
+Privileges
+Mandatory access control
+Grant command
+Revoke command
+Integrity constraints
+Multilevel Relations
+polyinstantiation
+covert channels
+Database Administrator
+statistical database
+encryption
+encryption key
+Data Encryption Standard
+decryption algorithm
+Transaction
+Isolation
+Durability
+Atomicity
+Commit
+Abort
+Schedule
+Complete schedule
+Serial schedule
+Serializability
+serializable schedule
+Conflict
+WR conflicts
+RW Conflicts
+WW conflicts
+Cascading
+Locking protocol
+Strict 2PL
+recovery manager
+transaction manager
+Serializability
+Recoverability
+conflict serializable
+Strict schedule
+serializable schedules
+precedence graph
+view equivalent
+view serializable
+lock manager
+lock
+convoy
+Deadlock
+Deadlock detection
+Deadlock prevention
+phantom problem
+multiple-granularity locking
+Boat
+Timestamp
+Recovery manager
+System crashes
+ARIES
+Log
+Log tail
+LSN
+Log record
+Update Log Record
+compensation log record
+CLR
+Transaction table
+Dirty page table
+WAL
+Checkpoint
+fuzzy checkpoint
+Begin checkpoint
+End checkpoint
+Redo phase
+Undo phase
+parallel database system
+distributed database system
+Pipelined parallelism
+data-partitioned parallel evaluation
+Data Partitioning
+round-robin partitioning
+hash partitioning
+range partitioning
+Scanning
+Loading
+Client-Server Systems
+Collaborating Server Systems
+Middleware Systems
+Fragmentation
+Horizontal fragmentation
+Vertical fragmentation
+Replication
+Bloomjoin
+Data warehouse
+Commit
+WEB
+HTML
+CGI
+Static pages
+Dynamic pages
+Application server
+XML
+JSP
+DTD
+keyword
+HITS
+URL
+XML-QL
+decision support
+data warehouse
+OLAP
+operational database
+fact table
+slicing
+dicing
+Statistical Databases
+SDBs
+Dimension table
+star schema
+Bitmap indexes
+MOLAP
+ROLAP
+Data mining
+KDD
+Market Basket Analysis
+Association Rules
+Support
+Confidence
+ISA hierarchy
+Bayesian Networks
+Classification
+Regression
+Decision tree
+Groth phase
+Pruning phase
+split selection method
+AVC
+Clustering
+BIRCH
+Feaute selection
+Sampling
+Visualization
+Object-oriented database system
+RDBMS
+OODBMS
+ADT
+BLOB
+Inheritance
+type constructors
+List
+Array
+Object
+Method
+Data type
+Pointer
+OQL
+spatial data
+point data
+raster data
+Region data
+Vector data
+Spatial query
+Nearest neighbor queries
+GIS
+Z-Ordering
+Region Quad tree
+Grid files
+concurrency control
+generalized search tree
+Datalog
+deductive database
+Model
+Fixpoint
+stratum
+stratified program
+stratified datalog
+fixpoint evaluation
+Magic Sets Algorithm
+

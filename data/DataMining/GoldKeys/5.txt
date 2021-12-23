@@ -1,0 +1,18 @@
+Pattern Mining
+Pattern Summarization
+Market basket
+Maximal Pattern
+Closed Pattern
+Frequent Pattern
+Pattern Querying
+Itemset Lattice
+Data Structure
+Classification
+Clustering
+Outlier Detection
+Demographic
+Profile analysis
+Collaborative filtering
+Web Log Analysis
+Bioinformatics
+Complex Data

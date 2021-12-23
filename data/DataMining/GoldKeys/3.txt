@@ -1,0 +1,21 @@
+Similarity measure
+Multidimensional data
+Quantitative data
+Dimensionality
+Lp-Norms
+Nonlinear Distribution
+Categorical Data
+Text Similarity
+Binary data 
+Time-Series
+Edit distance
+Distance function
+Dynamic Time Warping
+Window-Based Methods 
+Discrete Sequence Similarity
+Graph Similarity Measures
+Structural Distance-Based Measure
+Random Walk-Based Similarity
+Supervised Similarity Functions
+Mahalanobis distance
+Euclidean distance

@@ -1,0 +1,15 @@
+File
+File organization
+Heap
+Hashed file
+Scan
+Bucket
+Hash function
+Index
+Cost
+Data entry
+Spars index
+Dense index
+Primary index
+Secondary index
+Composite search key

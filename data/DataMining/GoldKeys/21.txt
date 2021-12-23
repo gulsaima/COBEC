@@ -1,0 +1,470 @@
+Data mining
+Data mining process
+Data Preprocessing
+Analytical Phase
+Data type
+Nondependency-Oriented Data
+Multidimensional Data
+Categorical data
+Mixed Attribute Data
+Binary data
+Set Data
+Text Data
+Feature extraction
+Dependency Oriented Data
+Time-Series
+Discrete Sequence
+Spatial Data
+Network data
+Graph Data
+Association Pattern Mining
+Outlier Detection
+Pattern Mining
+Clustering
+Outlier Detection
+Classification
+Feature Selection
+Filter Models
+Gini Index
+Entropy
+Holdout method
+Logistic regression
+Fisher Score
+Linear discriminant analysis
+Wrapper Models
+Embedded Models
+Decision Tree
+Split Criteria
+Pruning
+Rule-Based Classifier
+Sequential Covering Algorithm
+Learn-One-Rule
+Associative Classifier
+Probabilistic Classifier
+Naive Bayes Classifier
+Ranking Model
+Naive Assumption
+Support Vector Machine
+Nonseparable Data
+Nonlinear Support Vector Machine
+Kernel method
+Neural Network
+Single-Layer Neural Network
+Perceptron
+Roc_curve
+Instance-Based Learning
+Unsupervised Mahalanobis
+Linear Discriminant Analysis
+Classifier Evaluation
+Holdout
+Cross Validation
+Bootstrap
+Quantification Issues
+Naive bayes classifier
+Generalized linear model
+Sampling Method
+Synthetic Oversampling
+Scalable Classification
+Decision Tree
+RainForest
+BOAT
+Scalable Support Vector Machine
+Regression Model
+Linear Regression
+Fisher’s Linear Discriminant
+Principal Component Regression
+Logistic regression
+Nonlinear regression
+Polynomial Regression
+Regression Tree
+Self Training 
+Co-training
+Active Learning
+Heterogeneity-Based Model
+Performance-Based Model
+Error Reduction
+Variance Reduction
+Representativeness-Based Model
+Ensemble Methods
+Bias Variance Trade-off
+Bagging
+Random Forest
+Boosting
+Stacking
+Data Stream
+Reservoir Sampling
+Handling Concept Drift
+Sampling
+Bloom
+Count-Min Sketch
+K-median
+Flajolet–Martin
+Pattern Mining
+Leveraging Synopsis Structure
+Reservoir Sampling
+Lossy Counting
+Clustering algorithm
+STREAM
+CluStream 
+Microcluster
+Microclustering Algorithm
+Pyramidal Time Frame
+Massive-Domain Stream Clustering
+Streaming Outlier Detection
+Streaming Classification
+VFDT
+Supervised Microcluster Approach
+Ensemble Method
+Massive-Domain Streaming Classification
+Text mining
+Semantic analysis
+Document Normalization
+Cosine similarity
+Jaccard similarity
+Similarity function
+Representative-Based Algorithms
+Probabilistic Algorithm
+Co-clustering
+Topic Modeling
+Dimensionality Reduction
+Latent Semantic Analysis
+Clustering
+PLSA
+Instance-Based Classifier
+Centroid-Based Classification
+Rocchio Classification
+Bayes Classifier
+Multinomial Bayes Model
+SVM
+Time Series
+Handling Missing Value
+Noise Removal
+Normalization
+Wavelet Transform
+Fourier Transform
+Symbolic Aggregate Approximation
+Time Series Forecasting
+Autoregressive Model
+Time Series Motifs
+Distance-Based Motif
+Sequential Pattern Mining
+Periodic Pattern
+Differencing
+Coevolving Series
+k-Mean
+k-Medoid
+Hierarchical Method
+Outlier Detection
+Point Outlier
+Shape Outlier
+Mining Discrete Sequences
+Sequential Pattern Mining
+Sequence Clustering
+Distance-Based Method
+Graph-Based Method
+Subsequence-Based Clustering
+Mixture model
+CLUSEQ
+Position Outlier
+Probabilistic Suffix Tree
+Similarity measure
+Distance-Based Model
+Frequency-Based Model
+Baum–Welch Algorithm
+Sequence Classification
+Nearest Neighbor Classifier
+Graph-Based Method
+Rule Based
+Bag of Words Kernel
+Spectrum Kernel
+Weighted Degree Kernel
+Markov chain
+Hidden Markov ModelMining Spatial Data
+Spatial coordinates
+Time Series
+Multidimensional Transformation
+Wavelet
+Spatial Colocation Pattern
+Outlier Detection
+Point Outliers
+Shape Outliers
+Trajectory Mining
+Trajectories
+Multivariate Time Series
+Univariate Time Series
+Multidimensional Data
+Trajectory Pattern Mining
+Frequent Trajectory Path
+Dynamic time wrapping
+Colocation Pattern
+Trajectory Clustering
+Trajectory Outlier Detection
+Distance Based Method
+Sequence Based Method
+Trajectory Classification
+Graph
+Mining graph data
+Ullman’s Algorithm 
+Maximum Common Subgraph
+Subgraph isomorphism
+Kernel method
+MCG based Distance
+Graph Edit Distance
+Topological Descriptor
+Kernel-Based Transformation
+Random Walk Kernel
+Shortest-Path Kernel
+Frequent Substructure Mining
+Node-Based Join Growth
+Edge-Based Join Growth
+Frequent Pattern Mining
+Graph Clustering
+Web mining
+Web Crawling
+Pearson correlation
+Spider Trap
+Shingling
+Search Engine Indexing
+Social network
+Ranking Algorithm
+PageRank
+Topic Sensitive PageRank
+SimRank
+HITS
+Recommender System
+Content Based Recommendation
+Neighborhood-Based Method
+Collaborative Filtering
+User Based Similarity
+Item Based Similarity
+Graph Based Method
+Clustering
+k-Means Clustering
+Co-Clustering
+Singular Value Decomposition
+Matrix Factorization
+Web Usage Mining
+Data Preprocessing
+Social Network Analysis
+Social Networks
+Homophily
+Triadic Closure
+Clustering Coefficient
+Measures of Centrality
+Degree Centrality
+Closeness Centrality
+Betweenness Centrality
+Rank Centrality
+Pagerank
+Eigenvector
+Kernighan Lin Algorithm
+Girvan Newman Algorithm
+METIS
+Spectral Clustering
+Random Walk
+Spectral Method
+Embedding 
+Graph Regularization Approach
+Link Prediction
+Neighborhood Based Measure
+Katz Measure
+Random Walk-Based Measure
+Social Influence Analysis
+Linear Threshold Model
+Independent Cascade Model
+Influence Function EvaluationData Preparation
+Feature Extraction
+Data Type
+Portability
+Discretization
+Binarization
+Time Series
+Data Cleaning
+Handling Missing Entries
+Scaling
+Normalization
+Data Reduction
+Data Transformation
+Sampling
+Reservoir Sampling
+Data Stream
+Feature Subset Selection
+Dimensionality Reduction
+Principal Component Analysis
+Singular Value Decomposition
+Latent Semantic Analysis
+Haar Wavelet Transform
+Multidimensional Scaling 
+Privacy-Preserving Data Mining
+Data Collection
+Privacy-Preserving Data Publishing
+k Anonymity
+Samarati’s Algorithm
+Incognito
+Synthetic Data
+Diversity
+t-closeness
+Curse of Dimensionality
+Distributed Privacy
+Similarity measure
+Multidimensional data
+Quantitative data
+Dimensionality
+Lp-Norms
+Nonlinear Distribution
+Categorical Data
+Text Similarity
+Binary data 
+Time-Series
+Edit distance
+Distance function
+Dynamic Time Warping
+Window-Based Method
+Discrete Sequence Similarity
+Graph Similarity Measures
+Structural Distance-Based Measure
+Random Walk-Based Similarity
+Supervised Similarity Function
+Mahalanobis distance
+Euclidean distanceAssociation rule mining
+Pattern mining
+Frequent Itemset Mining
+Brute Force Algorithm
+Apriori Algorithm
+Efficient Support Counting
+Enumeration Tree
+Vertical Counting
+Recursive Suffix-Based Pattern
+Data Structure
+FP Growth
+Enumeration Tree Method
+Correlation
+χ2 Measure
+Interest Ratio
+Symmetric Confidence Measure
+Cosine Coefficient
+Jaccard Coefficient
+Negative Pattern Mining
+Meta algorithm
+Sampling
+Data Partitioned Ensemble
+Pattern Mining
+Pattern Summarization
+Market basket
+Maximal Pattern
+Closed Pattern
+Frequent Pattern
+Pattern Querying
+Itemset Lattice
+Data Structure
+Classification
+Clustering
+Outlier Detection
+Demographic
+Profile analysis
+Collaborative filtering
+Web Log Analysis
+Bioinformatics
+Complex Data
+Cluster Analysis
+Feature Selection
+Filter Model
+Entropy
+Hopkins Statistic
+Wrapper Model
+Representative-Based
+k-Means
+Kernel k-Means
+k-Medians
+k-Medoids
+Hierarchical clustering
+Bottom-Up agglomerative 
+Group-Based Statistics
+Top-Down Divisive Method
+Bisecting k-Means
+Probabilistic Model-Based
+Grid-Based
+Density-Based Algorithms
+DBSCAN
+DENCLUE
+Graph-Based Algorithms
+Properties of Graph-Based Algorithm
+Non-negative Matrix Factorization
+Singular Value Decomposition
+Cluster Validation
+Internal Validation
+Parameter Tuning
+External Validation
+Data Mining
+Pattern mining
+Clustering
+k-Means
+k-Medoids
+Hierarchical clustering
+ROCK
+Probability distribution
+Maximum likelihood estimation
+Graph-Based
+Scalable Data Clustering
+CLARANS
+BIRCH
+CURE
+High-Dimensional Clustering
+CLIQUE
+PROCLUS
+ORCLUS
+Consensus Clustering
+Pointwise Supervision
+Pairwise Supervision
+Supervised Clustering
+Visual Clustering
+Hypergraph Partitioning
+Meta-clustering
+Data Summarization
+Outlier Analysis
+Classification
+Dimensionality Reduction
+Similarity Search
+Indexing
+Customer Segmentation
+Collaborative Filtering
+Social Network AnalysisClustering
+Outlier detection
+Extreme Value Analysis
+Normal distribution
+Multivariate Extreme Values 
+Probabilistic model
+Distance-Based Outlier
+Pruning
+Sampling
+Local Distance Correction
+Local Outlier Factor
+Mahalanobis Distance
+Density function
+Histogram
+Kernel Density Estimation
+Information-Theoretic Model
+Generative model
+Outlier Validity
+Receiver Operating Characteristic
+Outlier detection
+Probabilistic Model
+Data clustering
+Normal distribution
+Extreme value analysis
+Distance-Based Methods 
+Binary data
+Set-Valued Data
+Grid Search
+Subspace Outliers
+Random Subspace Sampling
+Outlier Ensembles
+Sequential Ensembles
+Independent Ensembles
+Model-Centered Ensembles
+Data-Centered Ensembles
+Normalization
+Quality Control
+Fault Detection
+Web Log Analytics
+Intrusion Detection

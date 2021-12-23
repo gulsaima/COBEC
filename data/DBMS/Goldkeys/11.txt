@@ -1,0 +1,11 @@
+Sorting algorithm
+Algorithm
+Merge sort
+External merge
+Buffer
+Buffer block
+Buffer pool
+Double buffering
+Index
+Clustered index
+Unclustered index

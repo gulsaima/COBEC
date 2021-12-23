@@ -1,0 +1,11 @@
+Privacy-Preserving Data Mining
+Data Collection
+Privacy-Preserving Data Publishing
+k-Anonymity
+Samarati’s Algorithm
+Incognito
+Synthetic Data
+Diversity
+t-closeness
+Curse of Dimensionality
+Distributed Privacy
